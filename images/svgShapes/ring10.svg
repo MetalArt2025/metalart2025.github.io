@@ -1,0 +1,8 @@
+<svg width="204" height="70">
+<path d="M1 17.666666666666668  1 67.66666666666667 " fill="none" stroke="#fff" stroke-width="2px">
+</path><path d="M1,67.66666666666667 Q51,51 101,51" fill="none" stroke="#fff" stroke-width="2px" type="bottom"></path>
+<path d="M101,51 Q151,51 201,67.66666666666667" fill="none" stroke="#fff" stroke-width="2px" type="bottom"></path>
+<path d="M201 67.66666666666667  201 17.666666666666668 " fill="none" stroke="#fff" stroke-width="2px">
+</path><path d="M201,17.666666666666668 Q151,1 101,1" fill="none" stroke="#fff" stroke-width="2px" type="top"></path>
+<path d="M101,1 Q51,1 1,17.666666666666668" fill="none" stroke="#fff" stroke-width="2px" type="top"></path>
+</svg>

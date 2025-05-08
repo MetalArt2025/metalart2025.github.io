@@ -1,0 +1,17 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true
+    },
+    "javascript.validate.enable": false,
+    "eslint.useFlatConfig": true,
+    "eslint.validate": [
+        "javascript"
+    ],
+    "eslint.run": "onSave"
+}
