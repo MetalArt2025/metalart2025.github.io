@@ -108,7 +108,7 @@ input[type=text]{
 	/* background-color:#111; */
 	font-size:13px;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: top;
 	padding: 10px;
 	max-height: calc(100vh - 20px);
 }
