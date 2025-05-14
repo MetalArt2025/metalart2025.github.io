@@ -3,8 +3,10 @@ const updateShopify = (obj) => {
   window.parent.postMessage(
     {
       type: "RING_UPDATE",
-      isValid: Boolean(currentRingValid),
-      payload: obj,
+      payload: {
+        ...obj,
+        isValid: Boolean(currentRingValid),
+      },
     },
     "*"
   );
