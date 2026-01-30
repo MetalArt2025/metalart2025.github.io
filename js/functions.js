@@ -239,8 +239,8 @@ materialsArr = [
         startCost: [20, 10],
         customerFactor: [7, 7],
         margin: [
-          [0.7, 1, 3],
-          [0.7, 1, 3.2],
+          [0.85, 0.9, 3],
+          [0.8, 0.9, 3.2],
         ],
       },
       {
@@ -252,8 +252,8 @@ materialsArr = [
         startCost: [20, 10],
         customerFactor: [7, 7],
         margin: [
-          [0.7, 1, 3],
-          [0.7, 1, 3.2],
+          [0.8, 0.9, 3],
+          [0.85, 0.9, 3.2],
         ],
       },
     ],
