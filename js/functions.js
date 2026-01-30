@@ -130,7 +130,7 @@ materialsArr = [
         maxDiameter: [25, 31.75],
         cutWidth: [2, 2],
         finishPrice: [20, 15],
-        ppmm: [0.275, 0.42],
+        ppmm: [0.46, 0.7],
         startCost: [15, 19],
         customerFactor: [7, 7],
         margin: [
@@ -143,7 +143,7 @@ materialsArr = [
         maxDiameter: [25, 38],
         cutWidth: [2, 2],
         finishPrice: [20, 15],
-        ppmm: [0.38, 0.805],
+        ppmm: [0.64, 1.34],
         startCost: [19, 19],
         customerFactor: [7, 7],
         margin: [
@@ -235,7 +235,7 @@ materialsArr = [
         maxDiameter: [25, 38],
         cutWidth: [2, 2],
         finishPrice: [20, 15],
-        ppmm: [0.96, 3],
+        ppmm: [1.6, 3],
         startCost: [20, 10],
         customerFactor: [9.2, 8],
         margin: [
@@ -248,7 +248,7 @@ materialsArr = [
         maxDiameter: [25, 38],
         cutWidth: [2, 2],
         finishPrice: [30, 25],
-        ppmm: [1, 3],
+        ppmm: [1.65, 3],
         startCost: [20, 10],
         customerFactor: [9.2, 8],
         margin: [
