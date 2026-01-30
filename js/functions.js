@@ -134,8 +134,8 @@ materialsArr = [
         startCost: [15, 19],
         customerFactor: [7, 7],
         margin: [
-          [0.75, 1, 4.8],
-          [0.9, 1, 5.4],
+          [0.85, 1, 4.8],
+          [0.85, 1, 5.4],
         ],
       },
       {
@@ -147,8 +147,8 @@ materialsArr = [
         startCost: [19, 19],
         customerFactor: [7, 7],
         margin: [
-          [0.87, 1, 5.3],
-          [0.82, 1, 4.2],
+          [0.85, 1, 5.3],
+          [0.85, 1, 4.2],
         ],
       },
     ],
@@ -235,12 +235,12 @@ materialsArr = [
         maxDiameter: [25, 38],
         cutWidth: [2, 2],
         finishPrice: [20, 15],
-        ppmm: [1.6, 3],
+        ppmm: [1.6, 3.2],
         startCost: [20, 10],
-        customerFactor: [7, 7],
+        customerFactor: [5.8, 5.8],
         margin: [
-          [0.85, 0.9, 3],
-          [0.8, 0.9, 3.2],
+          [0.85, 1, 3],
+          [0.85, 1, 3.2],
         ],
       },
       {
@@ -250,10 +250,10 @@ materialsArr = [
         finishPrice: [30, 25],
         ppmm: [1.65, 3],
         startCost: [20, 10],
-        customerFactor: [7, 7],
+        customerFactor: [5.8, 5.8],
         margin: [
-          [0.8, 0.9, 3],
-          [0.85, 0.9, 3.2],
+          [0.85, 1, 3],
+          [0.85, 1, 3.2],
         ],
       },
     ],
