@@ -240,7 +240,7 @@ materialsArr = [
         customerFactor: [7, 7],
         margin: [
           [0.7, 1, 3],
-          [0.8, 1, 3.2],
+          [0.7, 1, 3.2],
         ],
       },
       {
@@ -253,7 +253,7 @@ materialsArr = [
         customerFactor: [7, 7],
         margin: [
           [0.7, 1, 3],
-          [0.8, 1, 3.2],
+          [0.7, 1, 3.2],
         ],
       },
     ],
