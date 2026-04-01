@@ -394,7 +394,7 @@ function replaceSliders(sliders) {
 
 updateAffected = function () {
   currentRingValid = 1;
-  var maxOuterDiameter = [31, 37, 29, 37, 32];
+  var maxOuterDiameter = [31, 29, 29, 37, 32];
   max = maxOuterDiameter[getMaterialIndex()] / 2;
   if (ringObj.totalHeight > max) {
     currentRingValid = 0;
