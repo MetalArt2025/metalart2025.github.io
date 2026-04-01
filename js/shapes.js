@@ -276,7 +276,7 @@ ringsObj = [
       ringInnerWidth: {
         val: 20,
         min: [15, 15, 15, 15, 15],
-        max: [31, 37, 29, 38, 32],
+        max: [31, 37, 29, 29, 32],
         label: ["Inner Width", "Ringmaat"],
         depends: ["ringHeightVal"],
       },
