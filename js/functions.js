@@ -154,34 +154,34 @@ materialsArr = [
     ],
   },
   {
-    title: ["Steel", "Edelstaal"],
-    material: [
-      {
-        color: 0xaaaaaa,
-        metalness: 0.975,
-        roughness: 0.2,
-        matte: 0.4,
-        bumpScale: 0.001,
-        thumb: "images/colour-steel-1.png",
-      },
-    ],
-    grades: [
-      {
-        title: ["Grade 2", "Grade 2"],
-        maxDiameter: [29],
-        cutWidth: [2],
-        finishPrice: [20, 15],
-        ppmm: [0.0103, 0.0103],
-        startCost: [18, 18],
-        customerFactor: [67],
-        margin: [
-          [0.75, 1.1, 2],
-          [0.75, 1.1, 2],
-        ],
-      },
-    ],
-  },
-  {
+{
+  title: ["Steel", "Edelstaal"],
+  material: [
+    {
+      color: 0xaaaaaa,
+      metalness: 0.975,
+      roughness: 0.2,
+      matte: 0.4,
+      bumpScale: 0.001,
+      thumb: "images/colour-steel-1.png",
+    },
+  ],
+  grades: [
+    {
+      title: ["Grade 2", "Grade 2"],
+      maxDiameter: [24.9, 37],
+      cutWidth: [2, 2],
+      finishPrice: [20, 15],
+      ppmm: [0.0103, 0.0203],
+      startCost: [18, 18],
+      customerFactor: [67, 67],
+      margin: [
+        [0.75, 1.1, 2],
+        [0.75, 1.1, 2],
+      ],
+    },
+  ],
+},
     title: ["Aluminium", "Aluminium"],
     material: [
       {
