@@ -153,8 +153,8 @@ materialsArr = [
       },
     ],
   },
-  {
-{
+  
+
   title: ["Steel", "Edelstaal"],
   material: [
     {
@@ -169,7 +169,7 @@ materialsArr = [
   grades: [
     {
       title: ["Grade 2", "Grade 2"],
-      maxDiameter: [24.9, 37],
+      maxDiameter: [29, 37],
       cutWidth: [2, 2],
       finishPrice: [20, 15],
       ppmm: [0.0103, 0.0203],
