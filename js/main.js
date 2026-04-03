@@ -100,7 +100,6 @@ changeMaterial = function () {
   $(".finishType").prop("checked", true);
   ringObj.usefinish = 1;
   ringObj.glossMatteIndex = 0;
-  userRings[currentUserRing].glossMatteIndex = 0;
   $(".btnFinish1, .btnFinish2").removeClass("btnOn");
   $(".btnFinish1").addClass("btnOn");
   //$('.titleButton .btnOn').click();
