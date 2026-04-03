@@ -228,6 +228,22 @@ materialsArr = [
         bumpScale: 0.003,
         thumb: "images/colour-zirc-2.png",
       },
+      {
+        color: 0x888888,
+        metalness: 0.99,
+        roughness: 0.3,
+        matte: 0.2,
+        bumpScale: 0.003,
+        thumb: "images/colour-zirc-1.png",
+      },
+      {
+        color: 0x222222,
+        metalness: 1,
+        roughness: 0.25,
+        matte: 0.45,
+        bumpScale: 0.003,
+        thumb: "images/colour-zirc-2.png",
+      },
     ],
     grades: [
       {
