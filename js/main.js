@@ -92,6 +92,11 @@ changeMaterial = function () {
     $(".matGradeDiv button").removeClass("btnOn");
     $(this).addClass("btnOn");
     ringObj.gradeIndex = getGradeIndex();
+    if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
+      ringObj.finish = "Gloss";
+      ringObj.glossMatteIndex = 0;
+      userRings[currentUserRing].glossMatteIndex = 0;
+    }
     changeMaterial();
   });
   $(".materialsPopupDv").hide();
