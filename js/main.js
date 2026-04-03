@@ -97,14 +97,11 @@ changeMaterial = function () {
   $(".materialsPopupDv").hide();
  
 if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
-  ringObj.finish = "Gloss";
-  ringObj.glossMatteIndex = 0;
-  $(".finishType").prop("checked", true);
-  ringObj.usefinish = 1;
-  $(".btnFinish1, .btnFinish2").removeClass("btnOn");
-  $(".btnFinish1").addClass("btnOn");
-  $(".finishTypeSelecter .titleButton, .disclaimer").show();
-  $(".finishType").prop("disabled", true);
+    $(".finishType").prop("checked", true);
+    ringObj.usefinish = 1;
+    //$('.titleButton .btnOn').click();
+    $(".finishTypeSelecter .titleButton, .disclaimer").show();
+    $(".finishType").prop("disabled", true);
   } else {
     $(".finishType").prop("disabled", false);
   }
