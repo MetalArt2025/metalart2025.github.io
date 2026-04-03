@@ -3,7 +3,7 @@ biezen	mki9
 rixel	poi6
 tessa	reij7
 */
-
+ 
 var rrx,
   rry,
   rrz,
@@ -38,15 +38,15 @@ var rrx,
   materialPlane,
   doCartUpdate,
   ringData;
-
+ 
 if (typeof userRings == "undefined") {
   userRings = [];
   currentUserRing = 0;
 }
-
+ 
 var loggedIn;
 var loggedInUserName;
-
+ 
 debug = 1;
 ringChanged = 0;
 fpsRatio = 1;
@@ -61,10 +61,10 @@ curveBRChecked = 1;
 curveTRChecked = 1;
 curveTLChecked = 1;
 goldIndex = 4;
-
+ 
 spinRing = 1;
 autoSpin = 1;
-
+ 
 pageLabels = [
   { container: ".ringTypeSelecter h2", text: ["Ring shape", "Ringvorm"] },
   { container: ".materialTypeSelecter h2", text: ["Material", "Materiaal"] },
@@ -102,7 +102,7 @@ pageLabels = [
     ],
   },
 ];
-
+ 
 materialsArr = [
   {
     title: ["Titanium", "Titanium"],
@@ -231,7 +231,7 @@ materialsArr = [
     ],
     grades: [
       {
-        title: ["Grey", "Grijs"],
+        title: ["705 Grey", "705 Grijs"],
         maxDiameter: [25, 38],
         cutWidth: [2, 2],
         finishPrice: [20, 15],
@@ -244,11 +244,37 @@ materialsArr = [
         ],
       },
       {
-        title: ["Black", "Zwart"],
+        title: ["705 Black", "705 Zwart"],
         maxDiameter: [25, 38],
         cutWidth: [2, 2],
         finishPrice: [30, 25],
         ppmm: [1.65, 4.05],
+        startCost: [20, 10],
+        customerFactor: [5.8, 5.8],
+        margin: [
+          [0.85, 1, 3],
+          [0.85, 1, 3.2],
+        ],
+      },
+      {
+        title: ["702 Grey", "702 Grijs"],
+        maxDiameter: [24.9, 38],
+        cutWidth: [2, 2],
+        finishPrice: [20, 15],
+        ppmm: [0.78, 1.8],
+        startCost: [20, 10],
+        customerFactor: [5.8, 5.8],
+        margin: [
+          [0.85, 1, 3],
+          [0.85, 1, 3.2],
+        ],
+      },
+      {
+        title: ["702 Black", "702 Zwart"],
+        maxDiameter: [24.9, 38],
+        cutWidth: [2, 2],
+        finishPrice: [30, 25],
+        ppmm: [0.78, 1.8],
         startCost: [20, 10],
         customerFactor: [5.8, 5.8],
         margin: [
@@ -376,19 +402,19 @@ materialsArr = [
     ],
   },
 ];
-
+ 
 function log(str) {
   if (debug == 1) {
     console.log(str);
   }
 }
-
+ 
 function getMaterialIndex() {
   return currentMaterial == 5 || currentMaterial == 6
     ? goldIndex
     : currentMaterial;
 }
-
+ 
 function getFinish(type) {
   console.log("getFinish", type);
   finishIndex = -1;
@@ -408,7 +434,7 @@ function getFinish(type) {
     }
   }
 }
-
+ 
 function getGradeIndex() {
   gi = $(".matGradeDiv button").index($(".matGradeDiv .btnOn"));
   if (gi < 0) {
@@ -416,7 +442,7 @@ function getGradeIndex() {
   }
   return gi;
 }
-
+ 
 function formatPrice(price) {
   price = price / 1;
   price = price.toFixed(2);
@@ -428,12 +454,12 @@ function formatPrice(price) {
   }
   return price;
 }
-
+ 
 function parseDecimalRoundAndFixed(num, dec) {
   var d = Math.pow(10, dec);
   return (Math.round(num * d) / d).toFixed(dec);
 }
-
+ 
 function switchLanguage() {
   for (var x = 0; x < pageLabels.length; x++) {
     if (
@@ -456,13 +482,13 @@ function switchLanguage() {
   $(".matTitleDiv").html(materialsArr[currentMaterial].title[langIndex]);
   $(".materialListDiv span").hide().eq(langIndex).show();
 }
-
+ 
 switchLanguage();
-
+ 
 function showRingSizeError() {
   alert("Please change the current ring details. It is too tall!");
 }
-
+ 
 function doLogin() {
   $.ajax({
     data: {
@@ -489,7 +515,7 @@ function doLogin() {
     },
   });
 }
-
+ 
 function doLogout() {
   $.ajax({
     data: { action: "logout" },
@@ -501,64 +527,64 @@ function doLogout() {
     },
   });
 }
-
+ 
 function hideLogin() {
   $(".loggedInDiv").hide();
   $(".loginDiv").fadeTo(300, 1);
 }
-
+ 
 function showLogin() {
   $(".loginDiv").hide();
   $(".loggedInDiv").fadeTo(300, 1);
   switchLanguage();
   log("User type : " + loggedInUserType);
 }
-
+ 
 createScene = function () {
   log("createScene called");
   setupRing(currentRingType);
 };
-
+ 
 var rotationInterval;
 var clicked = false;
 cameraBeta = 0;
 ringRotation = 0;
 var fpsInterval;
-
+ 
 resizeCanvas = function () {
   $(".materialsPopupDv").css(
     "margin-top",
     0 - Math.round($(".materialsPopupDv").height() / 2) + "px"
   );
-
+ 
   /* 3D Canvas... */
   windowWidth = $(".appContainer").width();
   windowHeight = $(".appContainer").height();
   canvasWidth = Math.floor(windowWidth * 0.8 - 310);
   canvasOffsetX = 0;
   canvasOffsetY = 0;
-
+ 
   if (windowHeight < canvasWidth) {
     canvasOffsetX = Math.floor((canvasWidth - windowHeight) / 2);
     canvasWidth = windowHeight;
   } else {
     canvasOffsetY = Math.floor((windowHeight - canvasWidth) / 2);
   }
-
+ 
   $("#renderCanvas")
     .width(canvasWidth)
     .height(canvasWidth)
     .css("margin-left", canvasOffsetX + "px")
     .css("margin-top", canvasOffsetY + "px");
-
+ 
   try {
     camera.aspect = canvasWidth / canvasWidth;
     camera.updateProjectionMatrix();
     renderer.setSize(canvasWidth, canvasWidth);
   } catch (e) {}
-
+ 
   /* 2D Canvas */
-
+ 
   //$(".canvasContainer").height(canvasWidth);
   $(".canvasContainer").width(Math.floor(canvasWidth * 0.383)); //.css("margin-top", canvasOffsetY+"px");;
   //$(".loginDiv, .langSelect").css("right", ($(".canvasContainer").width()+14)+"px");
@@ -572,13 +598,13 @@ resizeCanvas = function () {
     $(".canvasContainer").width(canvasWidth);
     $(".canvasContainer").height(canvasHeight);
     */
-
+ 
   canvas2.style.width = Math.floor($(".canvasContainer").width()); //$(".canvasContainer").width();
   canvas2.style.height = canvasWidth; //$(".canvasContainer").height();
 };
-
+ 
 $(window).bind("resize", resizeCanvas);
-
+ 
 mbArr = new Array(
   "Android",
   "BlackBerry",
@@ -588,7 +614,7 @@ mbArr = new Array(
   "Opera Mini",
   "IEMobile"
 );
-
+ 
 function checkMobile() {
   for (x = 0; x < mbArr.length; x++) {
     if (navigator.userAgent.indexOf(mbArr[x]) > -1) {
@@ -597,9 +623,9 @@ function checkMobile() {
   }
   return false;
 }
-
+ 
 var holesArr;
-
+ 
 function makeHoles() {
   if (holesArr != undefined) {
     for (x = 0; x < holesArr.length; x++) {
@@ -636,25 +662,25 @@ function makeHoles() {
     scene.add(holesArr[x]);
   }
 }
-
+ 
 function rotateAboutPoint(obj, point, axis, theta, pointIsWorld) {
   pointIsWorld = pointIsWorld === undefined ? false : pointIsWorld;
-
+ 
   if (pointIsWorld) {
     obj.parent.localToWorld(obj.position); // compensate for world coordinate
   }
-
+ 
   obj.position.sub(point); // remove the offset
   obj.position.applyAxisAngle(axis, theta); // rotate the POSITION
   obj.position.add(point); // re-add the offset
-
+ 
   if (pointIsWorld) {
     obj.parent.worldToLocal(obj.position); // undo world coordinates compensation
   }
-
+ 
   obj.rotateOnAxis(axis, theta); // rotate the OBJECT
 }
-
+ 
 function volumeOfT(p1, p2, p3) {
   var v321 = p3.x * p2.y * p1.z;
   var v231 = p2.x * p3.y * p1.z;
@@ -664,15 +690,15 @@ function volumeOfT(p1, p2, p3) {
   var v123 = p1.x * p2.y * p3.z;
   return (1.0 / 6.0) * (-v321 + v231 + v312 - v132 - v213 + v123);
 }
-
+ 
 function calculateVolume(object) {
   var volumes = 0.0;
-
+ 
   for (var i = 0; i < object.geometry.faces.length; i++) {
     var Pi = object.geometry.faces[i].a;
     var Qi = object.geometry.faces[i].b;
     var Ri = object.geometry.faces[i].c;
-
+ 
     var P = new THREE.Vector3(
       object.geometry.vertices[Pi].x,
       object.geometry.vertices[Pi].y,
@@ -690,10 +716,10 @@ function calculateVolume(object) {
     );
     volumes += volumeOfT(P, Q, R);
   }
-
+ 
   return Math.abs(volumes);
 }
-
+ 
 function calculateVolume(object) {
   geo = object.geometry;
   var x1, x2, x3, y1, y2, y3, z1, z2, z3, i;
@@ -701,7 +727,7 @@ function calculateVolume(object) {
   var totalVolume = 0;
   var totalArea = 0;
   var a, b, c, s;
-
+ 
   for (i = 0; i < len; i++) {
     x1 = geo.vertices[geo.faces[i].a].x;
     y1 = geo.vertices[geo.faces[i].a].y;
@@ -712,7 +738,7 @@ function calculateVolume(object) {
     x3 = geo.vertices[geo.faces[i].c].x;
     y3 = geo.vertices[geo.faces[i].c].y;
     z3 = geo.vertices[geo.faces[i].c].z;
-
+ 
     totalVolume +=
       -x3 * y2 * z1 +
       x2 * y3 * z1 +
@@ -720,45 +746,45 @@ function calculateVolume(object) {
       x1 * y3 * z2 -
       x2 * y1 * z3 +
       x1 * y2 * z3;
-
+ 
     a = geo.vertices[geo.faces[i].a].distanceTo(geo.vertices[geo.faces[i].b]);
     b = geo.vertices[geo.faces[i].b].distanceTo(geo.vertices[geo.faces[i].c]);
     c = geo.vertices[geo.faces[i].c].distanceTo(geo.vertices[geo.faces[i].a]);
     s = (a + b + c) / 2;
     totalArea += Math.sqrt(s * (s - a) * (s - b) * (s - c));
   }
-
+ 
   return [Math.abs(totalVolume / 6), totalArea];
 }
-
+ 
 var link = document.createElement("a");
 link.style.display = "none";
 document.body.appendChild(link);
-
+ 
 if (!Detector.webgl) {
   log("WEB GL NOT AVAILABLE");
 }
-
+ 
 var scene;
 var ringMat;
 var container;
-
+ 
 var camera, scene, renderer;
-
+ 
 var mesh, lightMesh, geometry;
 var spheres = [];
-
+ 
 var directionalLight, pointLight;
-
+ 
 var mouseX = 0;
 var mouseY = 0;
-
+ 
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
-
+ 
 var lastMouseX = 0;
 var lastMouseY = 0;
-
+ 
 var settings = {
   metalness: 1.0,
   roughness: 0.4,
@@ -768,17 +794,17 @@ var settings = {
   displacementScale: 2.436143, // from original model
   normalScale: 1.0,
 };
-
+ 
 document.addEventListener("mousemove", onDocumentMouseMove, false);
-
+ 
 var onRenderFcts = [];
-
+ 
 init();
 animate();
-
+ 
 function init() {
   canvas = $("#renderCanvas")[0];
-
+ 
   scene = new THREE.Scene();
   sceneBackground = new THREE.CubeTextureLoader()
     .setPath("textures/skybox5/")
@@ -790,17 +816,17 @@ function init() {
       "skybox_pz.jpg",
       "skybox_nz.jpg",
     ]);
-
+ 
   renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
   renderer.setPixelRatio(2);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
+ 
   var radius = 20;
   var aspect = 2;
   camera = new THREE.PerspectiveCamera(40, aspect, 1, 1000);
   camera.position.set(-64, 10, 20);
-
+ 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
   controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
@@ -814,51 +840,51 @@ function init() {
   controls.autoRotateSpeed = 1;
   controls.enableZoom = false;
   controls.enablePan = false;
-
+ 
   $("#renderCanvas").on("contextmenu", function (e) {
     e.preventDefault();
     return false;
   });
-
+ 
   var textureLoader = new THREE.TextureLoader();
   var normalMap = textureLoader.load("textures/brushed.jpg");
-
+ 
   // lights
   light = new THREE.DirectionalLight(0xffffff, 2);
   light.position.multiplyScalar(1.3);
   light.castShadow = true;
   light.shadow.mapSize.width = 2048 * 2;
   light.shadow.mapSize.height = 2048 * 2;
-
+ 
   var d = 200;
-
+ 
   light.shadow.camera.left = -d;
   light.shadow.camera.right = d;
   light.shadow.camera.top = d;
   light.shadow.camera.bottom = -d;
   light.shadow.camera.far = 120;
   light.shadow.camera.near = 1;
-
+ 
   scene.add(light);
   light.position.set(0, 0, 1);
-
+ 
   ambientLight = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambientLight);
-
+ 
   pointLight = new THREE.PointLight(0xffffff, 0.5);
   pointLight.position.x = -3000;
   pointLight.position.y = 30;
   pointLight.position.z = -1000;
   scene.add(pointLight);
-
+ 
   pointLight2 = new THREE.PointLight(0xffffff, 0.5);
   pointLight2.position.x = 3000;
   pointLight2.position.y = 30;
   pointLight2.position.z = 1000;
   scene.add(pointLight2);
-
+ 
   // env map
-
+ 
   var path = "textures/skybox4/skybox_";
   var format = ".jpg";
   var urls = [
@@ -869,12 +895,12 @@ function init() {
     path + "pz" + format,
     path + "nz" + format,
   ];
-
+ 
   var reflectionCube = new THREE.CubeTextureLoader().load(urls);
-
+ 
   //log("HERE PLANE");
   plane = new THREE.CylinderGeometry(30, 30, 0.001, 64, 20, false);
-
+ 
   var textureLoader = new THREE.TextureLoader();
   textureLoader.load("textures/plane.png", function (tex) {
     planeMat = new THREE.MeshPhongMaterial({
@@ -899,9 +925,9 @@ function init() {
     bumpMap: normalLoader.load("textures/brushed.jpg"),
     bumpScale: 0.005,
   });
-
+ 
   ringMat.bumpMap.rotation = Math.PI / 2;
-
+ 
   var pts = [
     new THREE.Vector3(150, 50, 0), //top left
     new THREE.Vector3(200, 50, 0), //top right
@@ -909,10 +935,10 @@ function init() {
     new THREE.Vector3(150, -50, 0), //bottom left
     new THREE.Vector3(150, 50, 0), //back to top left - close square path
   ];
-
+ 
   ring = new THREE.Mesh(new THREE.LatheGeometry(pts, 512), ringMat);
   ring.castShadow = true;
-
+ 
   //scene.add(ring);
   //setupRing(currentRingType);
   plane1 = new THREE.Mesh(plane);
@@ -921,10 +947,10 @@ function init() {
   } catch (e) {}
   //makeHoles();
 }
-
+ 
 var tooSlow = 0;
 var stopRendering = 0;
-
+ 
 function animate() {
   if (stopRendering == 1) {
     return false;
@@ -932,7 +958,7 @@ function animate() {
   render();
   requestAnimationFrame(animate);
 }
-
+ 
 function render() {
   if (stopRendering == 1) {
     log("Rendering...");
@@ -945,7 +971,7 @@ function render() {
     log("Rendered...");
   }
 }
-
+ 
 var lastTimeMsec = null;
 requestAnimationFrame(function animate(nowMsec) {
   if (stopRendering == 1) {
@@ -957,7 +983,7 @@ requestAnimationFrame(function animate(nowMsec) {
   var deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
   lastTimeMsec = nowMsec;
   fps = 1000 / deltaMsec;
-
+ 
   //log("fps = "+fps)
   if (fps <= 6) {
     log("Poor performance!");
@@ -972,7 +998,7 @@ requestAnimationFrame(function animate(nowMsec) {
     tooSlow--;
   }
   requestAnimationFrame(animate);
-
+ 
   // call each update function
   onRenderFcts.forEach(function (onRenderFct) {
     onRenderFct(deltaMsec / 1000, nowMsec / 1000);
@@ -988,12 +1014,12 @@ requestAnimationFrame(function animate(nowMsec) {
   light.position.y = 50;
   light.target.position.set(0, 0, 0);
 });
-
+ 
 resizeCanvas();
-
+ 
 function onDocumentMouseMove(event) {
   mouseX = (event.clientX - windowHalfX) * 10;
   mouseY = (event.clientY - windowHalfY) * 10;
 }
-
+ 
 //stats = new Stats();
