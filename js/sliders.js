@@ -5,26 +5,26 @@ var sliderDown = 0;
 var sliderGroupActive = 0;
 var currentRingValid = 1;
 var mouseDown = 0;
-
+ 
 $(document).bind("mousedown", function () {
   mouseDown = 1;
 });
 $(document).bind("mouseup", function () {
   mouseDown = 0;
 });
-
+ 
 function resetSliderBG() {
   if (mouseDown == 0) {
     $(".sliderDiv").css("background-color", "#0a0a0a");
   }
 }
-
+ 
 function createSlider(sliderObj) {
   if (ringObj.params[sliderObj].exclude) {
     return false;
   }
   ringVal = ringObj.params[sliderObj].val;
-
+ 
   if (ringVal > ringObj.params[sliderObj].max[getMaterialIndex()]) {
     ringVal = ringObj.params[sliderObj].val =
       ringObj.params[sliderObj].max[getMaterialIndex()];
@@ -55,7 +55,7 @@ function createSlider(sliderObj) {
       '">';
     tabindex += 2;
   }
-
+ 
   $("[slidername=" + sliderObj + "]").html(
     sliderInput +
       "<h2>" +
@@ -77,7 +77,7 @@ function createSlider(sliderObj) {
         ringObj.params[sliderObj].min[getMaterialIndex()] * 10) +
       '"></div></div></div>'
   );
-
+ 
   $(".sliderDiv")
     .unbind("mouseenter")
     .bind("mouseenter", function () {
@@ -99,7 +99,7 @@ function createSlider(sliderObj) {
       drawCanvasPath(lastPaths);
       //resetSliderBG();
     });
-
+ 
   if (ringObj.params[sliderObj].groupName) {
     groupClass = "";
     if (ringObj[ringObj.params[sliderObj].groupName].grouped == 1) {
@@ -206,9 +206,9 @@ function createSlider(sliderObj) {
   }
   $(".sliderInput").unbind("keyup").bind("keyup", updateSliderInput);
 }
-
+ 
 var returnShapesInterval;
-
+ 
 sliderActionRange = function (slider, vals, val, from) {
   slider
     .parent()
@@ -229,7 +229,7 @@ sliderActionRange = function (slider, vals, val, from) {
       .css("color", "#FFF");
     return false;
   }
-
+ 
   slider
     .parent()
     .parent()
@@ -240,13 +240,13 @@ sliderActionRange = function (slider, vals, val, from) {
     .parent()
     .find(".sliderInput2")
     .val(vals[0] / 10);
-
+ 
   slider.slider("values", vals);
   ringObj.params[slider.attr("param")].values = [vals[0] / 10, vals[1] / 10];
   updateAffected();
   returnShapes();
 };
-
+ 
 slideActionNoRange = function (slider, val, from) {
   slider
     .parent()
@@ -263,7 +263,7 @@ slideActionNoRange = function (slider, val, from) {
   }
   currentSliderParam = val;
   ringObj.params[slider.attr("param")].val = val / 10;
-
+ 
   if (ringObj.params[slider.attr("param")].affects) {
     updateDependencies(val, ringObj.params[slider.attr("param")].affects);
   }
@@ -273,7 +273,7 @@ slideActionNoRange = function (slider, val, from) {
   updateAffected();
   returnShapes();
 };
-
+ 
 function updateSliderInput() {
   val = $(this).val();
   if (val[val.length - 1] == ".") {
@@ -286,7 +286,7 @@ function updateSliderInput() {
     $(this).css("background-color", "#510000").css("color", "#FFF");
     return false;
   }
-
+ 
   if (
     val > ringObj.params[slider.attr("param")].max[getMaterialIndex()] ||
     val < ringObj.params[slider.attr("param")].min[getMaterialIndex()]
@@ -294,7 +294,7 @@ function updateSliderInput() {
     $(this).css("background-color", "#510000").css("color", "#FFF");
     return false;
   }
-
+ 
   if (ringObj.params[slider.attr("param")].values == undefined) {
     slider.slider("value", val * 10);
     slideActionNoRange(slider, val * 10, "input");
@@ -304,7 +304,7 @@ function updateSliderInput() {
     if ($(this).hasClass("sliderInput2")) {
       input = "sliderInput1";
       sVals = slider.slider("values");
-
+ 
       if (val * 10 + ringObj.params[slider.attr("param")].spacing >= sVals[1]) {
         newVals = [
           sVals[1] - ringObj.params[slider.attr("param")].spacing,
@@ -326,7 +326,7 @@ function updateSliderInput() {
     } else {
       input = "sliderInput2";
       sVals = slider.slider("values");
-
+ 
       if (val * 10 - ringObj.params[slider.attr("param")].spacing <= sVals[0]) {
         newVals = [
           sVals[0],
@@ -355,7 +355,7 @@ function updateSliderInput() {
   }
   checkRingChanged();
 }
-
+ 
 function updateGroupValues(groupArr, master) {
   for (b = 0; b < groupArr.length; b++) {
     if (groupArr[b] != master) {
@@ -366,7 +366,7 @@ function updateGroupValues(groupArr, master) {
   replaceSliders(groupArr);
   returnShapes();
 }
-
+ 
 updateSliderGroup = function (sliderName, val) {
   obj = ringObj[ringObj.params[sliderName].groupName];
   if (obj.grouped == 0) {
@@ -384,18 +384,23 @@ updateSliderGroup = function (sliderName, val) {
     }
   }
 };
-
+ 
 function replaceSliders(sliders) {
   for (z = 0; z < sliders.length; z++) {
     $('div[slidername="' + sliders[z] + '"]').html("");
     createSlider(sliders[z]);
   }
 }
-
+ 
 updateAffected = function () {
   currentRingValid = 1;
   var maxOuterDiameter = [31, 29, 29, 37, 32];
-  max = maxOuterDiameter[getMaterialIndex()] / 2;
+  var effectiveMax = maxOuterDiameter[getMaterialIndex()];
+  // Zirkonium 702 (gradeIndex 2 of 3) heeft een lagere maxDiameter
+  if (getMaterialIndex() == 3 && getGradeIndex() >= 2) {
+    effectiveMax = 24.9;
+  }
+  max = effectiveMax / 2;
   if (ringObj.totalHeight > max) {
     currentRingValid = 0;
     for (y = 0; y < ringObj.heightSliders.length; y++) {
@@ -413,7 +418,7 @@ updateAffected = function () {
     }
   }
 };
-
+ 
 updateDependencies = function (val, sliders) {
   val = val / 10;
   for (var y = 0; y < sliders.length; y++) {
@@ -429,7 +434,7 @@ updateDependencies = function (val, sliders) {
           ringObj.params[sliders[y]].max[getMaterialIndex()] / 1;
       }
     }
-
+ 
     if (ringObj.params[sliders[y]].range) {
       newMax = ringObj.params[sliders[y]].newMax();
       values = ringObj.params[sliders[y]].values;
@@ -440,7 +445,7 @@ updateDependencies = function (val, sliders) {
       ) {
         values[1] = newMax;
       }
-
+ 
       if (values[0] >= newMax) {
         if (values[0] >= values[1]) {
           values[0] = (
@@ -462,7 +467,7 @@ updateDependencies = function (val, sliders) {
   }
   replaceSliders(sliders);
 };
-
+ 
 function returnSliderMarkers(min, max, step) {
   min /= 10;
   max /= 10;
@@ -497,7 +502,7 @@ function returnSliderMarkers(min, max, step) {
       max +
       '<span class="markerDevider"></span></div>';
   }
-
+ 
   if (step != undefined) {
     min /= step;
     max /= step;
