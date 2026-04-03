@@ -396,7 +396,6 @@ updateAffected = function () {
   currentRingValid = 1;
   var maxOuterDiameter = [31, 29, 29, 37, 32];
   var effectiveMax = maxOuterDiameter[getMaterialIndex()];
-  // Zirkonium 702 (gradeIndex 2 of 3) heeft een lagere maxDiameter
   if (getMaterialIndex() == 3 && getGradeIndex() >= 2) {
     effectiveMax = 24.9;
   }
@@ -404,17 +403,21 @@ updateAffected = function () {
   if (ringObj.totalHeight > max) {
     currentRingValid = 0;
     for (y = 0; y < ringObj.heightSliders.length; y++) {
-      $("." + ringObj.heightSliders[y] + "Slider")
+      var sliderDiv = $("." + ringObj.heightSliders[y] + "Slider")
         .parent()
-        .parent()
-        .addClass("sliderRedBG");
+        .parent();
+      sliderDiv.addClass("sliderRedBG");
+      if (sliderDiv.find(".sliderWarning").length === 0) {
+        sliderDiv.append('<div class="sliderWarning">Ringmaat te groot voor dit materiaal</div>');
+      }
     }
   } else {
     for (y = 0; y < ringObj.heightSliders.length; y++) {
-      $("." + ringObj.heightSliders[y] + "Slider")
+      var sliderDiv = $("." + ringObj.heightSliders[y] + "Slider")
         .parent()
-        .parent()
-        .removeClass("sliderRedBG");
+        .parent();
+      sliderDiv.removeClass("sliderRedBG");
+      sliderDiv.find(".sliderWarning").remove();
     }
   }
 };
