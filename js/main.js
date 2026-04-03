@@ -96,7 +96,7 @@ changeMaterial = function () {
   });
   $(".materialsPopupDv").hide();
  
-if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
+ if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
     $(".finishType").prop("checked", true);
     ringObj.usefinish = 1;
     //$('.titleButton .btnOn').click();
