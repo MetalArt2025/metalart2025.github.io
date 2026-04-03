@@ -378,7 +378,7 @@ function updatePrice() {
     }
  
     if (currentMaterial == 2) {
-      ringPrice = 10;
+      ringPrice = 15;
     }
   }
  
