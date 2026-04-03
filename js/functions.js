@@ -110,8 +110,8 @@ materialsArr = [
       {
         color: 0x333333,
         metalness: 0.8,
-        roughness: 0.35,
-        matte: 0,
+        roughness: 0.1,
+        matte: 0.35,
         bumpScale: 0.001,
         thumb: "images/colour-tit-1.png",
       },
@@ -215,8 +215,8 @@ materialsArr = [
       {
         color: 0x888888,
         metalness: 0.99,
-        roughness: 0.3,
-        matte: 0.2,
+        roughness: 0.2,
+        matte: 0.3,
         bumpScale: 0.003,
         thumb: "images/colour-zirc-1.png",
       },
@@ -231,8 +231,8 @@ materialsArr = [
       {
         color: 0x888888,
         metalness: 0.99,
-        roughness: 0.3,
-        matte: 0.2,
+        roughness: 0.2,
+        matte: 0.3,
         bumpScale: 0.003,
         thumb: "images/colour-zirc-1.png",
       },
