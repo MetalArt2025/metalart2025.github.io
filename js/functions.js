@@ -237,7 +237,7 @@ materialsArr = [
         thumb: "images/colour-zirc-1.png",
       },
       {
-        color: 0x222222,
+        color: 0x2a2a2a,
         metalness: 1,
         roughness: 0.25,
         matte: 0.45,
