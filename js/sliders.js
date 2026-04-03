@@ -408,7 +408,7 @@ updateAffected = function () {
         .parent();
       sliderDiv.addClass("sliderRedBG");
       if (sliderDiv.find(".sliderWarning").length === 0) {
-        sliderDiv.append('<div class="sliderWarning">buitenmaat te groot voor dit materiaal</div>');
+        sliderDiv.append('<div class="sliderWarning">Buitenmaat te groot voor dit materiaal</div>');
       }
     }
   } else {
