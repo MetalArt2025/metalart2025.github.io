@@ -290,7 +290,7 @@ materialsArr = [
         maxDiameter: [24.9, 38],
         cutWidth: [2, 2],
         finishPrice: [30, 25],
-        ppmm: [0.78, 1.8],
+        ppmm: [0.83, 1.85],
         startCost: [20, 10],
         customerFactor: [5.8, 5.8],
         margin: [
