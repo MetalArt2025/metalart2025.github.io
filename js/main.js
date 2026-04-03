@@ -99,8 +99,8 @@ changeMaterial = function () {
   if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
     $(".finishType").prop("checked", true);
     ringObj.usefinish = 1;
- 	ringObj.glossMatteIndex = 1;
-  	userRings[currentUserRing].glossMatteIndex = 1;
+	$(".btnFinish1, .btnFinish2").removeClass("btnOn");
+ 	$(".btnFinish2").addClass("btnOn")
     //$('.titleButton .btnOn').click();
     $(".finishTypeSelecter .titleButton, .disclaimer").show();
     $(".finishType").prop("disabled", true);
