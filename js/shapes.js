@@ -286,8 +286,7 @@ ringsObj = [
         max: [5, 5, 5, 5, 5],
         label: ["Height", "Dikte"],
         parentDepend: "ringInnerWidth",
-        affects: ["ringEdgeCurve"],
-        pathArr: [0, 1, 3, 4, 5, 7],
+        affects: ["ringEdgeCurve", "ringInnerEdgeCurve"],
       },
       ringDepth: {
         val: 5,
@@ -310,9 +309,27 @@ ringsObj = [
                 getMaterialIndex()
               ].toFixed(1);
         },
-        label: ["Edge Curve", "Afronding"],
+        label: ["Edge Curve Outside", "Afronding Buiten"],
         range: false,
-        pathArr: [1, 3, 5, 7],
+        pathArr: [1, 3],
+      },
+      ringInnerEdgeCurve: {
+        val: 0.5,
+        min: [0, 0, 0, 0, 0],
+        max: [2, 0.5, 0.5, 0.5, 0.5],
+        maxOriginal: [2, 0.5, 0.5, 0.5, 0.5],
+        step: 0.5,
+        newMax: function () {
+          return ringObj.params.ringHeightVal.val / 2 <
+            ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()]
+            ? (ringObj.params.ringHeightVal.val / 2).toFixed(2)
+            : ringObj.params.ringInnerEdgeCurve.maxOriginal[
+                getMaterialIndex()
+              ].toFixed(1);
+        },
+        label: ["Edge Curve Inside", "Afronding Binnen"],
+        range: false,
+        pathArr: [5, 7],
       },
     },
     latheTesselation: { min: 64, max: 128 },
@@ -322,11 +339,12 @@ ringsObj = [
     flattenMesh: true,
     updateRingPath: function () {
       ringEdgeCurve = ringObj.params.ringEdgeCurve.val + 0.1;
+      ringInnerEdgeCurve = ringObj.params.ringInnerEdgeCurve.val + 0.1;
       ringObj.path = [
         {
           type: "line",
           coords: [
-            [0 + ringEdgeCurve, 0],
+            [0 + ringInnerEdgeCurve, 0],
             [ringObj.params.ringHeightVal.val - ringEdgeCurve, 0],
           ],
         },
@@ -371,30 +389,30 @@ ringsObj = [
               ringObj.params.ringHeightVal.val - ringEdgeCurve,
               ringObj.params.ringDepth.val,
             ],
-            [0 + ringEdgeCurve, ringObj.params.ringDepth.val],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val],
           ],
         },
         {
           type: "quart",
           coords: [
-            [0 + ringEdgeCurve, ringObj.params.ringDepth.val - ringEdgeCurve],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
           ],
           detail: { min: 4, max: 8 },
-          radius: ringEdgeCurve,
+          radius: ringInnerEdgeCurve,
           position: "BR",
         },
         {
           type: "line",
           coords: [
-            [0, ringObj.params.ringDepth.val - ringEdgeCurve],
-            [0, 0 + ringEdgeCurve],
+            [0, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+            [0, 0 + ringInnerEdgeCurve],
           ],
         },
         {
           type: "quart",
-          coords: [[0 + ringEdgeCurve, 0 + ringEdgeCurve]],
+          coords: [[0 + ringInnerEdgeCurve, 0 + ringInnerEdgeCurve]],
           detail: { min: 4, max: 8 },
-          radius: ringEdgeCurve,
+          radius: ringInnerEdgeCurve,
           position: "BL",
         },
       ];
@@ -460,7 +478,7 @@ ringsObj = [
         val: 0.1,
         min: [0, 0, 0, 0, 0],
         max: [0.5, 0.5, 0.5, 0.5, 0.5],
-        label: ["Edge Curve", "Afronding"],
+        label: ["Edge Curve Outside", "Afronding Buiten"],
         affects: ["ringInnerCurveHeight"],
         maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
         newMax: function () {
@@ -831,7 +849,7 @@ ringsObj = [
         val: 0.1,
         min: [0, 0, 0, 0, 0],
         max: [0.5, 0.5, 0.5, 0.5, 0.5],
-        label: ["Edge Curve", "Afronding"],
+        label: ["Edge Curve Inside", "Afronding Binnen"],
         affects: ["ringInnerCurveHeight"],
         maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
         newMax: function () {
@@ -1071,17 +1089,10 @@ ringsObj = [
                 getMaterialIndex()
               ].toFixed(1);
         },
-        label: ["Edge Curve", "Afronding"],
+        label: ["Edge Curve Inside", "Afronding Binnen"],
         range: false,
         pathArr: [4, 6],
       },
-    },
-    latheTesselation: { min: 64, max: 128 },
-    newMax: function (val) {
-      return val;
-    },
-    flattenMesh: true,
-    updateRingPath: function () {
       ringEdgeCurve = ringObj.params.ringEdgeCurve.val + 0.1;
       ringObj.path = [
         {
@@ -2087,5 +2098,8 @@ ringsObj = [
       //ringObj.shapePrice = 20+5;
       ringObj.shapePrice = pricesObj.shapes[11] / 1;
     },
+  },
+];
+
   },
 ];
