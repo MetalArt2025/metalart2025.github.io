@@ -1267,6 +1267,7 @@ ringsObj = [
     flattenMesh: true,
     updateRingPath: function () {
       ringInnerEdgeCurve = ringObj.params.ringInnerEdgeCurve.val + 0.1;
+      innerWallHeight = ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val;
       ringObj.path = [
         {
           type: "line",
@@ -1293,7 +1294,7 @@ ringsObj = [
               ringObj.params.ringDepthPosition.val,
             ],
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepthPosition.val,
             ],
           ],
@@ -1302,13 +1303,29 @@ ringsObj = [
           type: "line",
           coords: [
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepthPosition.val,
             ],
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepth.val - ringInnerEdgeCurve,
             ],
+          ],
+        },
+        {
+          type: "quart",
+          coords: [
+            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+          ],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "TR",
+        },
+        {
+          type: "line",
+          coords: [
+            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val],
           ],
         },
         {
@@ -1409,7 +1426,6 @@ ringsObj = [
             return ringObj.params.ringHeightVal.val - 0.5;
           }
         },
-        affects: ["ringInnerEdgeCurve"],
         parentDepend: "ringInnerWidth",
         pathArr: [2, 4],
       },
@@ -1419,8 +1435,7 @@ ringsObj = [
         max: [0.5, 0.5, 0.5, 0.5, 0.5],
         maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
         newMax: function () {
-          sideHeight = ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val;
-          max = sideHeight / 2;
+          max = ringObj.params.ringHeightVal.val / 2;
           if (max > ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()]) {
             max = ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()];
           }
@@ -1631,6 +1646,7 @@ ringsObj = [
     flattenMesh: true,
     updateRingPath: function () {
       ringInnerEdgeCurve = ringObj.params.ringInnerEdgeCurve.val + 0.1;
+      innerWallHeight = ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val;
       fullRingHeight =
         ringObj.params.ringHeightVal.val + ringObj.params.ringOuter.val;
       ringObj.path = [
@@ -1639,20 +1655,29 @@ ringsObj = [
           coords: [
             [0 + ringInnerEdgeCurve, 0],
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight - ringInnerEdgeCurve,
               0,
             ],
           ],
         },
         {
+          type: "quart",
+          coords: [
+            [innerWallHeight - ringInnerEdgeCurve, 0 + ringInnerEdgeCurve],
+          ],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "TL",
+        },
+        {
           type: "line",
           coords: [
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
-              0,
+              innerWallHeight,
+              0 + ringInnerEdgeCurve,
             ],
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepths.values[0],
             ],
           ],
@@ -1661,7 +1686,7 @@ ringsObj = [
           type: "line",
           coords: [
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepths.values[0],
             ],
             [
@@ -1691,7 +1716,7 @@ ringsObj = [
               ringObj.params.ringDepths.values[1],
             ],
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepths.values[1],
             ],
           ],
@@ -1700,13 +1725,29 @@ ringsObj = [
           type: "line",
           coords: [
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepths.values[1],
             ],
             [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
+              innerWallHeight,
               ringObj.params.ringDepth.val - ringInnerEdgeCurve,
             ],
+          ],
+        },
+        {
+          type: "quart",
+          coords: [
+            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+          ],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "TR",
+        },
+        {
+          type: "line",
+          coords: [
+            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val],
           ],
         },
         {
