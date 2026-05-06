@@ -287,6 +287,7 @@ ringsObj = [
         label: ["Height", "Dikte"],
         parentDepend: "ringInnerWidth",
         affects: ["ringEdgeCurve", "ringInnerEdgeCurve"],
+        pathArr: [0, 1, 3, 4, 5, 7],
       },
       ringDepth: {
         val: 5,
@@ -1205,7 +1206,7 @@ ringsObj = [
         max: [5, 5, 5, 5, 5],
         label: ["Height", "Dikte"],
         parentDepend: "ringInnerWidth",
-        affects: ["ringOuter"],
+        affects: ["ringOuter", "ringInnerEdgeCurve"],
         pathArr: [0],
       },
       ringDepth: {
@@ -1237,22 +1238,40 @@ ringsObj = [
         label: ["Outer", "Diepte van de trap"],
         newMax: function () {
           max = (ringObj.params.ringHeightVal.val - 0.5).toFixed(1);
-          //ringObj.params.ringOuter.maxOriginal[getMaterialIndex()]).toFixed(1);
           return max;
         },
+        affects: ["ringInnerEdgeCurve"],
         parentDepend: "ringInnerWidth",
         pathArr: [2],
+      },
+      ringInnerEdgeCurve: {
+        val: 0,
+        min: [0, 0, 0, 0, 0],
+        max: [0.5, 0.5, 0.5, 0.5, 0.5],
+        maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
+        newMax: function () {
+          sideHeight = ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val;
+          max = sideHeight / 2;
+          if (max > ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()]) {
+            max = ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()];
+          }
+          return max.toFixed(2);
+        },
+        label: ["Edge Curve Inside", "Afronding Binnen"],
+        range: false,
+        pathArr: [4, 6, 8, 10],
       },
     },
     //newMax:function(val){return val;},
     latheTesselation: { min: 256, max: 512 },
     flattenMesh: true,
     updateRingPath: function () {
+      ringInnerEdgeCurve = ringObj.params.ringInnerEdgeCurve.val + 0.1;
       ringObj.path = [
         {
           type: "line",
           coords: [
-            [0, 0],
+            [0 + ringInnerEdgeCurve, 0],
             [ringObj.params.ringHeightVal.val, 0],
           ],
         },
@@ -1288,26 +1307,32 @@ ringsObj = [
             ],
             [
               ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
-              ringObj.params.ringDepth.val,
+              ringObj.params.ringDepth.val - ringInnerEdgeCurve,
             ],
           ],
         },
         {
-          type: "line",
+          type: "quart",
           coords: [
-            [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
-              ringObj.params.ringDepth.val,
-            ],
-            [0, ringObj.params.ringDepth.val],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
           ],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "BR",
         },
         {
           type: "line",
           coords: [
-            [0, ringObj.params.ringDepth.val],
-            [0, 0],
+            [0, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+            [0, 0 + ringInnerEdgeCurve],
           ],
+        },
+        {
+          type: "quart",
+          coords: [[0 + ringInnerEdgeCurve, 0 + ringInnerEdgeCurve]],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "BL",
         },
       ];
       svgScale = 200 / ringObj.params.ringDepth.val;
@@ -1344,7 +1369,7 @@ ringsObj = [
         max: [5, 5, 5, 5, 5],
         label: ["Height", "Dikte"],
         parentDepend: "ringInnerWidth",
-        affects: ["ringOuter"],
+        affects: ["ringOuter", "ringInnerEdgeCurve"],
         pathArr: [0, 6],
       },
       ringDepth: {
@@ -1382,21 +1407,40 @@ ringsObj = [
             return ringObj.params.ringOuter.maxOriginal[getMaterialIndex()];
           } else {
             return ringObj.params.ringHeightVal.val - 0.5;
-          } // ? ringObj.params.ringDepths.maxOriginal.toFixed(1) : (ringObj.params.ringHeightVal.val-0.5).toFixed(1);
+          }
         },
+        affects: ["ringInnerEdgeCurve"],
         parentDepend: "ringInnerWidth",
         pathArr: [2, 4],
+      },
+      ringInnerEdgeCurve: {
+        val: 0,
+        min: [0, 0, 0, 0, 0],
+        max: [0.5, 0.5, 0.5, 0.5, 0.5],
+        maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
+        newMax: function () {
+          sideHeight = ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val;
+          max = sideHeight / 2;
+          if (max > ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()]) {
+            max = ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()];
+          }
+          return max.toFixed(2);
+        },
+        label: ["Edge Curve Inside", "Afronding Binnen"],
+        range: false,
+        pathArr: [6, 8, 10, 12],
       },
     },
     //newMax:function(val){return val;},
     latheTesselation: { min: 256, max: 512 },
     flattenMesh: true,
     updateRingPath: function () {
+      ringInnerEdgeCurve = ringObj.params.ringInnerEdgeCurve.val + 0.1;
       ringObj.path = [
         {
           type: "line",
           coords: [
-            [0, 0],
+            [0 + ringInnerEdgeCurve, 0],
             [ringObj.params.ringHeightVal.val, 0],
           ],
         },
@@ -1463,15 +1507,31 @@ ringsObj = [
           type: "line",
           coords: [
             [ringObj.params.ringHeightVal.val, ringObj.params.ringDepth.val],
-            [0, ringObj.params.ringDepth.val],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val],
           ],
+        },
+        {
+          type: "quart",
+          coords: [
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+          ],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "BR",
         },
         {
           type: "line",
           coords: [
-            [0, ringObj.params.ringDepth.val],
-            [0, 0],
+            [0, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+            [0, 0 + ringInnerEdgeCurve],
           ],
+        },
+        {
+          type: "quart",
+          coords: [[0 + ringInnerEdgeCurve, 0 + ringInnerEdgeCurve]],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "BL",
         },
       ];
       svgScale = 200 / ringObj.params.ringDepth.val;
@@ -1508,7 +1568,7 @@ ringsObj = [
         max: [5, 5, 5, 5, 5],
         label: ["Height", "Dikte"],
         parentDepend: "ringInnerWidth",
-        affects: ["ringOuter"],
+        affects: ["ringOuter", "ringInnerEdgeCurve"],
         pathArr: [0, 2, 4, 6],
       },
       ringDepth: {
@@ -1541,10 +1601,27 @@ ringsObj = [
         newMax: function () {
           max = ringObj.params.ringHeightVal.val - 0.5;
           return max.toFixed(1);
-          //(ringObj.params.ringOuter.maxOriginal[getMaterialIndex()]).toFixed(1);
         },
+        affects: ["ringInnerEdgeCurve"],
         parentDepend: "ringInnerWidth",
         pathArr: [2, 4],
+      },
+      ringInnerEdgeCurve: {
+        val: 0,
+        min: [0, 0, 0, 0, 0],
+        max: [0.5, 0.5, 0.5, 0.5, 0.5],
+        maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
+        newMax: function () {
+          sideHeight = ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val;
+          max = sideHeight / 2;
+          if (max > ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()]) {
+            max = ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()];
+          }
+          return max.toFixed(2);
+        },
+        label: ["Edge Curve Inside", "Afronding Binnen"],
+        range: false,
+        pathArr: [6, 8, 10, 12],
       },
     },
     newMax: function (val) {
@@ -1553,14 +1630,14 @@ ringsObj = [
     latheTesselation: { min: 256, max: 512 },
     flattenMesh: true,
     updateRingPath: function () {
+      ringInnerEdgeCurve = ringObj.params.ringInnerEdgeCurve.val + 0.1;
       fullRingHeight =
         ringObj.params.ringHeightVal.val + ringObj.params.ringOuter.val;
-      //if(ringObj.params.ringDepths.values[0] == 0){fullRingHeight = ringObj.params.ringHeightVal.val;}
       ringObj.path = [
         {
           type: "line",
           coords: [
-            [0, 0],
+            [0 + ringInnerEdgeCurve, 0],
             [
               ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
               0,
@@ -1628,26 +1705,32 @@ ringsObj = [
             ],
             [
               ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
-              ringObj.params.ringDepth.val,
+              ringObj.params.ringDepth.val - ringInnerEdgeCurve,
             ],
           ],
         },
         {
-          type: "line",
+          type: "quart",
           coords: [
-            [
-              ringObj.params.ringHeightVal.val - ringObj.params.ringOuter.val,
-              ringObj.params.ringDepth.val,
-            ],
-            [0, ringObj.params.ringDepth.val],
+            [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
           ],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "BR",
         },
         {
           type: "line",
           coords: [
-            [0, ringObj.params.ringDepth.val],
-            [0, 0],
+            [0, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
+            [0, 0 + ringInnerEdgeCurve],
           ],
+        },
+        {
+          type: "quart",
+          coords: [[0 + ringInnerEdgeCurve, 0 + ringInnerEdgeCurve]],
+          detail: { min: 4, max: 8 },
+          radius: ringInnerEdgeCurve,
+          position: "BL",
         },
       ];
       svgScale = 200 / ringObj.params.ringDepth.val;
@@ -1815,7 +1898,6 @@ ringsObj = [
         min: [0.5, 0.5, 0.5, 0.5, 0.5],
         max: [5, 5, 5, 5, 5],
         label: ["Height", "Dikte"],
-        affects: ["ringCurveBL", "ringCurveBR", "ringCurveTR", "ringCurveTL"],
         parentDepend: "ringInnerWidth",
         pathArr: [0, 1, 3, 4, 5, 7],
       },
@@ -1826,190 +1908,87 @@ ringsObj = [
         label: ["Depth", "Breedte"],
         pathArr: [1, 2, 3, 5, 6, 7],
       },
-      ringCurveBL: {
-        val: 1.0,
-        min: [0, 0, 0, 0, 0],
-        max: [2, 2, 2, 2, 2],
-        maxOriginal: [2, 2, 2, 2, 2],
-        step: 0.5,
-        label: ["Curve BL", "Ronding Links Buiten"],
-        groupName: "ringCurve",
-        parentDepend: "ringHeightVal",
-        newMax: function () {
-          max = ringObj.params.ringHeightVal.val / 2;
-          if (
-            max > ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()]
-          ) {
-            max = ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()];
-          }
-          return max;
-        },
-        pathArr: [1],
-        pathArr2: [1, 3, 5, 7],
-      },
-      ringCurveBR: {
-        val: 1.0,
-        min: [0, 0, 0, 0, 0],
-        max: [2, 2, 2, 2, 2],
-        maxOriginal: [2, 2, 2, 2, 2],
-        step: 0.5,
-        label: ["Curve BR", "Ronding Rechts Buiten"],
-        groupName: "ringCurve",
-        parentDepend: "ringHeightVal",
-        newMax: function () {
-          max = ringObj.params.ringHeightVal.val / 2;
-          if (
-            max > ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()]
-          ) {
-            max = ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()];
-          }
-          return max;
-        },
-        pathArr: [3],
-        pathArr2: [1, 3, 5, 7],
-      },
-      ringCurveTL: {
-        val: 1.0,
-        min: [0, 0, 0, 0, 0],
-        max: [2, 2, 2, 2, 2],
-        maxOriginal: [2, 2, 2, 2, 2],
-        step: 0.5,
-        label: ["Curve TL", "Ronding Rechts Binnen"],
-        groupName: "ringCurve",
-        parentDepend: "ringHeightVal",
-        newMax: function () {
-          max = ringObj.params.ringHeightVal.val / 2;
-          if (
-            max > ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()]
-          ) {
-            max = ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()];
-          }
-          return max;
-        },
-        pathArr: [5],
-        pathArr2: [1, 3, 5, 7],
-      },
-      ringCurveTR: {
-        val: 1.0,
-        min: [0, 0, 0, 0, 0],
-        max: [2, 2, 2, 2, 2],
-        maxOriginal: [2, 2, 2, 2, 2],
-        step: 0.5,
-        label: ["Curve TR", "Ronding Links Binnen"],
-        groupName: "ringCurve",
-        parentDepend: "ringHeightVal",
-        newMax: function () {
-          max = ringObj.params.ringHeightVal.val / 2;
-          if (
-            max > ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()]
-          ) {
-            max = ringObj.params.ringCurveBL.maxOriginal[getMaterialIndex()];
-          }
-          return max;
-        },
-        pathArr: [7],
-        pathArr2: [1, 3, 5, 7],
-      },
     },
     newMax: function (val) {
       return val / 2;
     },
-    ringCurve: {
-      group: ["ringCurveBL", "ringCurveBR", "ringCurveTR", "ringCurveTL"],
-      grouped: 0,
-    },
     latheTesselation: { min: 64, max: 256 },
     flattenMesh: true,
     updateRingPath: function () {
-      ringCurveBL = ringObj.params.ringCurveBL.val + 0.1;
-      ringCurveBR = ringObj.params.ringCurveBR.val + 0.1;
-      ringCurveTR = ringObj.params.ringCurveTR.val + 0.1;
-      ringCurveTL = ringObj.params.ringCurveTL.val + 0.1;
-      detail = { min: 32, max: 256 };
-      ringObj.path = [];
-      ringObj.path.push({
-        type: "line",
-        coords: [
-          [0 + ringCurveTL, 0],
-          [ringObj.params.ringHeightVal.val - ringCurveBL, 0],
-        ],
-      });
-      type = "line";
-      if (curveBLChecked == 1) {
-        ringObj.path.push({
+      ringCurve = ringObj.params.ringHeightVal.val / 2 + 0.1;
+      ringObj.path = [
+        {
+          type: "line",
+          coords: [
+            [0 + ringCurve, 0],
+            [ringObj.params.ringHeightVal.val - ringCurve, 0],
+          ],
+        },
+        {
           type: "quart",
           coords: [
-            [ringObj.params.ringHeightVal.val - ringCurveBL, 0 + ringCurveBL],
+            [ringObj.params.ringHeightVal.val - ringCurve, 0 + ringCurve],
           ],
           detail: { min: 4, max: 16 },
-          radius: ringCurveBL,
+          radius: ringCurve,
           position: "TL",
-        });
-      }
-      ringObj.path.push({
-        type: "line",
-        coords: [
-          [ringObj.params.ringHeightVal.val, 0 + ringCurveBL],
-          [
-            ringObj.params.ringHeightVal.val,
-            ringObj.params.ringDepth.val - ringCurveBR,
+        },
+        {
+          type: "line",
+          coords: [
+            [ringObj.params.ringHeightVal.val, 0 + ringCurve],
+            [
+              ringObj.params.ringHeightVal.val,
+              ringObj.params.ringDepth.val - ringCurve,
+            ],
           ],
-        ],
-      });
-      type = "line";
-      if (curveBRChecked == 1) {
-        ringObj.path.push({
+        },
+        {
           type: "quart",
           coords: [
             [
-              ringObj.params.ringHeightVal.val - ringCurveBR,
-              ringObj.params.ringDepth.val - ringCurveBR,
+              ringObj.params.ringHeightVal.val - ringCurve,
+              ringObj.params.ringDepth.val - ringCurve,
             ],
           ],
           detail: { min: 4, max: 16 },
-          radius: ringCurveBR,
+          radius: ringCurve,
           position: "TR",
-        });
-      }
-      ringObj.path.push({
-        type: "line",
-        coords: [
-          [
-            ringObj.params.ringHeightVal.val - ringCurveBR,
-            ringObj.params.ringDepth.val,
+        },
+        {
+          type: "line",
+          coords: [
+            [
+              ringObj.params.ringHeightVal.val - ringCurve,
+              ringObj.params.ringDepth.val,
+            ],
+            [0 + ringCurve, ringObj.params.ringDepth.val],
           ],
-          [0 + ringCurveTR, ringObj.params.ringDepth.val],
-        ],
-      });
-      type = "line";
-      if (curveTRChecked == 1) {
-        ringObj.path.push({
+        },
+        {
           type: "quart",
           coords: [
-            [0 + ringCurveTR, ringObj.params.ringDepth.val - ringCurveTR],
+            [0 + ringCurve, ringObj.params.ringDepth.val - ringCurve],
           ],
           detail: { min: 4, max: 16 },
-          radius: ringCurveTR,
+          radius: ringCurve,
           position: "BR",
-        });
-      }
-      ringObj.path.push({
-        type: "line",
-        coords: [
-          [0, ringObj.params.ringDepth.val - ringCurveTR],
-          [0, 0 + ringCurveTL],
-        ],
-      });
-      type = "line";
-      if (curveTRChecked == 1) {
-        ringObj.path.push({
+        },
+        {
+          type: "line",
+          coords: [
+            [0, ringObj.params.ringDepth.val - ringCurve],
+            [0, 0 + ringCurve],
+          ],
+        },
+        {
           type: "quart",
-          coords: [[0 + ringCurveTL, 0 + ringCurveTL]],
+          coords: [[0 + ringCurve, 0 + ringCurve]],
           detail: { min: 4, max: 16 },
-          radius: ringCurveTL,
+          radius: ringCurve,
           position: "BL",
-        });
-      }
+        },
+      ];
 
       svgScale = 200 / ringObj.params.ringDepth.val;
       svgHeight = Math.floor(ringObj.params.ringHeightVal.val * svgScale) + 4;
