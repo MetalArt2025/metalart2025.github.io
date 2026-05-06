@@ -1308,23 +1308,14 @@ ringsObj = [
             ],
             [
               innerWallHeight,
-              ringObj.params.ringDepth.val - ringInnerEdgeCurve,
+              ringObj.params.ringDepth.val,
             ],
           ],
         },
         {
-          type: "quart",
-          coords: [
-            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
-          ],
-          detail: { min: 4, max: 8 },
-          radius: ringInnerEdgeCurve,
-          position: "TR",
-        },
-        {
           type: "line",
           coords: [
-            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val],
+            [innerWallHeight, ringObj.params.ringDepth.val],
             [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val],
           ],
         },
@@ -1654,28 +1645,13 @@ ringsObj = [
           type: "line",
           coords: [
             [0 + ringInnerEdgeCurve, 0],
-            [
-              innerWallHeight - ringInnerEdgeCurve,
-              0,
-            ],
+            [innerWallHeight, 0],
           ],
-        },
-        {
-          type: "quart",
-          coords: [
-            [innerWallHeight - ringInnerEdgeCurve, 0 + ringInnerEdgeCurve],
-          ],
-          detail: { min: 4, max: 8 },
-          radius: ringInnerEdgeCurve,
-          position: "TL",
         },
         {
           type: "line",
           coords: [
-            [
-              innerWallHeight,
-              0 + ringInnerEdgeCurve,
-            ],
+            [innerWallHeight, 0],
             [
               innerWallHeight,
               ringObj.params.ringDepths.values[0],
@@ -1724,29 +1700,14 @@ ringsObj = [
         {
           type: "line",
           coords: [
-            [
-              innerWallHeight,
-              ringObj.params.ringDepths.values[1],
-            ],
-            [
-              innerWallHeight,
-              ringObj.params.ringDepth.val - ringInnerEdgeCurve,
-            ],
+            [innerWallHeight, ringObj.params.ringDepths.values[1]],
+            [innerWallHeight, ringObj.params.ringDepth.val],
           ],
-        },
-        {
-          type: "quart",
-          coords: [
-            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val - ringInnerEdgeCurve],
-          ],
-          detail: { min: 4, max: 8 },
-          radius: ringInnerEdgeCurve,
-          position: "TR",
         },
         {
           type: "line",
           coords: [
-            [innerWallHeight - ringInnerEdgeCurve, ringObj.params.ringDepth.val],
+            [innerWallHeight, ringObj.params.ringDepth.val],
             [0 + ringInnerEdgeCurve, ringObj.params.ringDepth.val],
           ],
         },
