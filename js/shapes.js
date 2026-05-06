@@ -1093,6 +1093,13 @@ ringsObj = [
         range: false,
         pathArr: [4, 6],
       },
+    },
+    latheTesselation: { min: 64, max: 128 },
+    newMax: function (val) {
+      return val;
+    },
+    flattenMesh: true,
+    updateRingPath: function () {
       ringEdgeCurve = ringObj.params.ringEdgeCurve.val + 0.1;
       ringObj.path = [
         {
@@ -2098,8 +2105,5 @@ ringsObj = [
       //ringObj.shapePrice = 20+5;
       ringObj.shapePrice = pricesObj.shapes[11] / 1;
     },
-  },
-];
-
   },
 ];
