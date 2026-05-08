@@ -429,3 +429,131 @@
     </form>
   </body>
 </html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Basisring</title>
+    <script src="includes/jquery.min.js"></script>
+    <script src="includes/jquery-ui.js"></script>
+    <script src="includes/jquery.ui.touch-punch.min.js"></script>
+    <script src="includes/three.js"></script>
+    <script src="includes/ThreeCSG.js"></script>
+    <script src="includes/Detector.js"></script>
+    <script src="includes/OrbitControls.js"></script>
+    <script src="includes/stats.min.js"></script>
+    <script>
+      var ringFromSession = 0;
+      pricesObj = {
+        gold: "62.00",
+        shapes: ["5","10","15","10","20","10","15","15","20","25","10","25"],
+      };
+      var goldPrice = pricesObj.gold / 1;
+      var userRings;
+      var currentUserRing = 0;
+      var loggedInUserType = 1;
+      var shopSiteURL = "shopURL";
+      var ringSiteURL = "ringsiteURL";
+    </script>
+    <script src="js/shapes.js"></script>
+    <script src="js/sliders.js"></script>
+    <link rel="stylesheet" type="text/css" href="includes/glyphs.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" id="et-gf-open-sans-css" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic" type="text/css" media="all" />
+    <link rel="stylesheet" type="text/css" href="includes/jquery-ui.css" />
+  </head>
+  <body>
+    <div class="materialsPopupDv">
+      <span class="controlPanelDiv materialListDiv">
+        <button class="btnMaterialPopupClose">X</button>
+        <span>
+          <h2>Material info</h2>
+          <div class="ringOn" index="0"><table><tr><td><img src="images/colour-tit-1.png" /></td><td><b>Titanium</b><br /><strong> Titanium grade 2 </strong> is almost entirely pure titanium. It is a gray brown metal and is ideal to wear as an ornament. It is completely skin-friendly; the body does not react to titanium. <br /><strong> Titanium grade 5 </strong> is light gray in color and can be polished with electrolytic color. Titanium grade 5 is slightly less pure than grade 2 and is also skin-friendly and light weight.</td></tr></table></div>
+          <div index="3"><table><tr><td><img src="images/colour-zirc-1.png" /></td><td><b>Zirconium</b><br />Zirconium is a gray-white metal, with a low weight. By oxidising the metal, a very hard and black layer of zirconia is formed. Zirconium and zirconium-oxide are both skin-friendly.</td></tr></table></div>
+          <div index="4"><table><tr><td><img src="images/colour-goldYellow-1.png" /></td><td><b>Yellow gold</b><br />Yellow gold is an alloy of gold with silver and copper.</td></tr></table></div>
+          <div index="5"><table><tr><td><img src="images/colour-goldRed-1.png" /></td><td><b>Red gold</b><br />Red gold is an alloy of gold with copper.</td></tr></table></div>
+          <div index="6"><table><tr><td><img src="images/colour-goldWhite-1.png" /></td><td><b>White gold</b><br />White gold is an alloy of gold with silver, copper and palladium.</td></tr></table></div>
+          <div index="1"><table><tr><td><img src="images/colour-steel-1.png" /></td><td><b>Steel</b><br />Stainless steel is an alloy that consists of iron and a number of elements.</td></tr></table></div>
+          <div index="2"><table><tr><td><img src="images/colour-alum-1.png" /></td><td><b>Aluminium</b><br />Aluminum is light weight and light gray in color.</td></tr></table></div>
+        </span>
+        <span>
+          <h2>Materiaal info</h2>
+          <div class="ringOn" index="0"><table><tr><td><img src="images/colour-tit-1.png" /></td><td><b>Titanium</b><br /><strong>Titanium grade 2</strong> is bijna helemaal puur Titanium. Het is een grijs bruin metaal en is ideaal om te dragen als een sieraad.<br /><strong>Titanium grade 5</strong> is lichtgrijs van kleur en kan prima gepolijst of elektrolytisch gekleurd worden.</td></tr></table></div>
+          <div index="3"><table><tr><td><img src="images/colour-zirc-1.png" /></td><td><b>Zirkonium</b><br />Zirkonium is een grijs-wit metaal, met een laag gewicht. Door het metaal te oxideren ontstaat er een zeer harde en zwarte huid van zirkoniumoxide.</td></tr></table></div>
+          <div index="1"><table><tr><td><img src="images/colour-steel-1.png" /></td><td><b>Edelstaal</b><br />Edelstaal is een legering die bestaat uit ijzer en een aantal elementen.</td></tr></table></div>
+          <div index="2"><table><tr><td><img src="images/colour-alum-1.png" /></td><td><b>Aluminium</b><br />Aluminium is licht in gewicht en lichtgrijs van kleur.</td></tr></table></div>
+        </span>
+      </span>
+    </div>
+    <div class="overlayBG"></div>
+    <div class="canvasOverlay"></div>
+    <div class="materialDesigner">
+      R <input type="text" class="colorR" value="0.03" /> G <input type="text" class="colorG" value="0.03" /> B <input type="text" class="colorB" value="0.03" /> &nbsp;&nbsp; Roughness <input type="text" class="roughness" value="0.6" /> &nbsp; Metalic <input type="text" class="metalic" value="0.9" /><br />
+      Bump level <input type="text" class="bump" value="0.01" />
+    </div>
+    <div class="fps">123</div>
+    <div class="appContainer">
+      <div class="canvasContainer">
+        <canvas id="canvas2D" width="690" height="1800"></canvas>
+      </div>
+      <div class="controlPanel" align="center">
+        <div class="controlContainer">
+          <div class="ringTypeSelecter">
+            <h2>Ringvorm</h2>
+            <div class="ringThumb ringOn"><img src="images/ring1.png" /></div>
+            <div class="ringThumb"><img src="images/ring2.png" /></div>
+            <div class="ringThumb"><img src="images/ring3.png" /></div>
+            <div class="ringThumb"><img src="images/ring4.png?123" /></div>
+            <div class="ringThumb"><img src="images/ring5.png" /></div>
+            <div class="ringThumb"><img src="images/ring6.png" /></div>
+            <div class="ringThumb"><img src="images/ring7.png" /></div>
+            <div class="ringThumb"><img src="images/ring8.png" /></div>
+            <div class="ringThumb"><img src="images/ring9.png" /></div>
+            <div class="ringThumb"><img src="images/ring10.png" /></div>
+            <div class="ringThumb ringCircle"><img src="images/ring11.png" /></div>
+            <div class="ringThumb"><img src="images/ring12.png" class="ringAuto" /></div>
+          </div>
+          <br />
+          <div class="materialTypeSelecter">
+            <button class="titleButton btnChangeMaterial">Verander</button>
+            <h2>Materiaal</h2>
+            <br />
+            <span class="selectedMaterialDiv"><img /></span>
+            <span class="matTitleDiv"></span>
+            <span class="matGradeDiv">
+              <button>Grade 2</button>
+              <button>Grade 5</button>
+            </span>
+          </div>
+          <div class="finishTypeSelecter">
+            <span class="titleButton">
+              <button class="btnFinish1">Glans</button>
+              <button class="btnFinish2">Mat</button>
+            </span>
+            <h2>Afwerking</h2>
+            <input type="checkbox" class="finishType" /><br />
+            <div class="disclaimer">(Alle scherpe kanten worden afgerond)</div>
+          </div>
+          <br />
+          <div class="controls"></div>
+          <div class="canvasToPNG" style="display: none">
+            <button class="canvasToPNG">Canvas to PNG</button><br /><img />
+          </div>
+          <div align="center" class="autoSpinDiv">
+            <input type="checkbox" class="autoSpin" checked /><span>Automatisch draaien</span>
+          </div>
+          <div align="center" class="langSelect">
+            <div class="langOn">🇳🇱</div>
+            <div>🇬🇧</div>
+          </div>
+        </div>
+      </div>
+      <canvas id="renderCanvas"></canvas>
+    </div>
+    <script src="js/2dCanvas.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/functions.js"></script>
+    <form action="/basicrings/webservice.php" method="POST" class="cartForm" target="_self">
+      <input type="hidden" name="action" value="toCart" />
+      <input type="hidden" class="userRings" name="userRings" />
+    </form>
+  </body>
+</html>
