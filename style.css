@@ -664,3 +664,11 @@ button:hover{
   min-height: 16px;
   color: #aaa;
 }
+
+.sliderSurcharge {
+  font-size: 11px;
+  color: #f6931f;
+  font-weight: normal;
+  float: right;
+  margin-right: 50px;
+}
