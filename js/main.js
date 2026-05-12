@@ -221,11 +221,8 @@ function getRingData() {
   for (var y = 0; y < params.length; y++) {
     if (typeof obj.params[params[y]].val != "undefined") {
       jrp[params[y]] = obj.params[params[y]].val;
-      var surchargeLabel = (obj.params[params[y]].surcharge && obj.params[params[y]].val > 0)
-        ? " (+€ " + obj.params[params[y]].surcharge.toFixed(2) + ")"
-        : "";
       cartData[obj.params[params[y]].label[langIndex]] =
-        obj.params[params[y]].val + "mm" + surchargeLabel;
+        obj.params[params[y]].val + "mm";
     } else {
       jrp[params[y]] = obj.params[params[y]].values;
       cartData[obj.params[params[y]].label[langIndex]] =
