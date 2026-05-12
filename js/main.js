@@ -234,6 +234,11 @@ function getRingData() {
     }
   }
   cartData[getFinish("title")] = getFinish("value");
+
+  // Kortingscode toevoegen aan besteldata als actief
+  if (discountActive) {
+    cartData["Kortingscode"] = DISCOUNT_CODE + " (-15%)";
+  }
  
   var rn = "Ring";
   if (obj.price == undefined) {
