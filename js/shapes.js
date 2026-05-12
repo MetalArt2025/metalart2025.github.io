@@ -297,7 +297,7 @@ ringsObj = [
         pathArr: [1, 2, 3, 5, 6, 7],
       },
       ringEdgeCurve: {
-        val: 0.5,
+        val: 0,
         min: [0, 0, 0, 0, 0],
         max: [1, 1, 1, 1, 1],
         maxOriginal: [1, 1, 1, 1, 1],
@@ -313,9 +313,10 @@ ringsObj = [
         label: ["Edge Curve Outside", "Afronding Buiten"],
         range: false,
         pathArr: [1, 3],
+        surcharge: 2.5,
       },
       ringInnerEdgeCurve: {
-        val: 0.5,
+        val: 0,
         min: [0, 0, 0, 0, 0],
         max: [1, 1, 1, 1, 1],
         maxOriginal: [1, 1, 1, 1, 1],
@@ -331,6 +332,7 @@ ringsObj = [
         label: ["Edge Curve Inside", "Afronding Binnen"],
         range: false,
         pathArr: [5, 7],
+        surcharge: 2.5,
       },
     },
     latheTesselation: { min: 64, max: 128 },
