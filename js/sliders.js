@@ -60,6 +60,9 @@ function createSlider(sliderObj) {
     sliderInput +
       "<h2>" +
       ringObj.params[sliderObj].label[langIndex] +
+      (ringObj.params[sliderObj].surcharge && ringObj.params[sliderObj].val > 0
+        ? ' <span class="sliderSurcharge">+&euro; ' + ringObj.params[sliderObj].surcharge.toFixed(2) + '</span>'
+        : '') +
       '</h2><div class="sliderContainer"><div class="markersDiv">' +
       returnSliderMarkers(
         ringObj.params[sliderObj].min[getMaterialIndex()] * 10,
