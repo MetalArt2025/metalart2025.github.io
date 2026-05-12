@@ -55,6 +55,33 @@ fps = 0;
 langIndex = 1;
 mouseDown = 0;
 currentRingType = 0;
+
+// Kortingscode systeem
+var discountActive = false;
+var DISCOUNT_CODE = "ALMA15";
+var DISCOUNT_PCT = 0.85;
+
+function applyDiscountCode(code) {
+  if (code.toUpperCase() === DISCOUNT_CODE) {
+    discountActive = true;
+    $(".discountMessage").html("✓ 15% korting toegepast").css("color", "#5f5");
+  } else {
+    discountActive = false;
+    $(".discountMessage").html("Ongeldige code").css("color", "#f55");
+  }
+  updatePrice();
+}
+
+$(document).ready(function () {
+  $(".discountBtn").bind("click", function () {
+    applyDiscountCode($(".discountInput").val().trim());
+  });
+  $(".discountInput").bind("keyup", function (e) {
+    if (e.keyCode === 13) {
+      applyDiscountCode($(this).val().trim());
+    }
+  });
+});
 currentMaterial = 0;
 curveBLChecked = 1;
 curveBRChecked = 1;
