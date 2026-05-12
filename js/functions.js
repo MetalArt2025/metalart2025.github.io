@@ -61,6 +61,16 @@ var discountActive = false;
 var DISCOUNT_CODE = "ALMA15";
 var DISCOUNT_PCT = 0.85;
 
+// Luister naar leverancier activatie vanuit Shopify parent pagina
+window.addEventListener("message", function(event) {
+  if (event.data && event.data.type === "SET_LEVERANCIER") {
+    discountActive = true;
+    $(".discountDiv").hide();
+    $(".discountMessage").html("✓ 15% korting toegepast").css("color", "#5f5").show();
+    if (typeof updatePrice === "function") updatePrice();
+  }
+});
+
 function applyDiscountCode(code) {
   if (code.toUpperCase() === DISCOUNT_CODE) {
     discountActive = true;
@@ -69,7 +79,9 @@ function applyDiscountCode(code) {
     discountActive = false;
     $(".discountMessage").html("Ongeldige code").css("color", "#f55");
   }
-  userRings[currentUserRing] = getRingData();
+  if (typeof getRingData === "function") {
+    userRings[currentUserRing] = getRingData();
+  }
   updatePrice();
 }
 
