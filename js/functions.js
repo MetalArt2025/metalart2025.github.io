@@ -69,6 +69,7 @@ function applyDiscountCode(code) {
     discountActive = false;
     $(".discountMessage").html("Ongeldige code").css("color", "#f55");
   }
+  userRings[currentUserRing] = getRingData();
   updatePrice();
 }
 
