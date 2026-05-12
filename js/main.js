@@ -406,15 +406,24 @@ function updatePrice() {
   }
  
   //log('Price changed to ' + ringPrice + ' New total price = ' + totalPrice + ' Current ring = ' + currentUserRing);
- 
-  $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
-  $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice));
- 
-  if (loggedInUserType < 2) {
-    $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice * 1.21));
-    $(".ringPriceDiv h1")
-      .eq(currentUserRing)
-      .append("<br><span> (incl. 21% btw) </span>");
+
+  // Kortingscode: 15% op de basisprijs
+  if (discountActive) {
+    var originalPrice = (totalPrice / 1).toFixed(2);
+    totalPrice = (totalPrice * 0.85).toFixed(2);
+    $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
+    $(".ringPriceDiv h1").html("<strike>&euro; " + formatPrice(originalPrice) + "</strike> &euro; " + formatPrice(totalPrice));
+    if (loggedInUserType < 2) {
+      $(".ringPriceDiv h1").html("<strike>&euro; " + formatPrice(originalPrice * 1.21) + "</strike> &euro; " + formatPrice(totalPrice * 1.21));
+      $(".ringPriceDiv h1").eq(currentUserRing).append("<br><span> (incl. 21% btw) </span>");
+    }
+  } else {
+    $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
+    $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice));
+    if (loggedInUserType < 2) {
+      $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice * 1.21));
+      $(".ringPriceDiv h1").eq(currentUserRing).append("<br><span> (incl. 21% btw) </span>");
+    }
   }
   saveRingToSession();
 }
