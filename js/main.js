@@ -235,9 +235,9 @@ function getRingData() {
   }
   cartData[getFinish("title")] = getFinish("value");
 
-  // Kortingscode toevoegen aan besteldata als actief
+  // Leverancierskorting toevoegen direct na Afwerking
   if (discountActive) {
-    cartData["Kortingscode"] = DISCOUNT_CODE + " (-15%)";
+    cartData["Leverancierskorting"] = "15% toegepast";
   }
  
   var rn = "Ring";
@@ -416,8 +416,11 @@ function updatePrice() {
   if (discountActive) {
     var originalPrice = (totalPrice / 1).toFixed(2);
     totalPrice = (totalPrice * 0.85).toFixed(2);
-    // Kortingsprijs ook in ringObj zetten zodat Shopify de juiste prijs ontvangt
     userRings[currentUserRing].price = totalPrice;
+    userRings[currentUserRing].originalPrice = originalPrice;
+    if (userRings[currentUserRing].cartData) {
+      userRings[currentUserRing].cartData["Leverancierskorting"] = "15% toegepast";
+    }
     ringObj.price = totalPrice;
     $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
     $(".ringPriceDiv h1").html("<strike>&euro; " + formatPrice(originalPrice) + "</strike> &euro; " + formatPrice(totalPrice));
@@ -426,6 +429,10 @@ function updatePrice() {
       $(".ringPriceDiv h1").eq(currentUserRing).append("<br><span> (incl. 21% btw) </span>");
     }
   } else {
+    userRings[currentUserRing].originalPrice = null;
+    if (userRings[currentUserRing].cartData) {
+      delete userRings[currentUserRing].cartData["Leverancierskorting"];
+    }
     $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
     $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice));
     if (loggedInUserType < 2) {
