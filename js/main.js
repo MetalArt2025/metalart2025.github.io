@@ -411,6 +411,9 @@ function updatePrice() {
   if (discountActive) {
     var originalPrice = (totalPrice / 1).toFixed(2);
     totalPrice = (totalPrice * 0.85).toFixed(2);
+    // Kortingsprijs ook in ringObj zetten zodat Shopify de juiste prijs ontvangt
+    userRings[currentUserRing].price = totalPrice;
+    ringObj.price = totalPrice;
     $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
     $(".ringPriceDiv h1").html("<strike>&euro; " + formatPrice(originalPrice) + "</strike> &euro; " + formatPrice(totalPrice));
     if (loggedInUserType < 2) {
