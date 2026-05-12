@@ -1,676 +1,532 @@
-const updateShopify = (obj) => {
-  console.log("Sending postmessage");
-  window.parent.postMessage(
-    {
-      type: "RING_UPDATE",
-      payload: {
-        ...obj,
-        isValid: Boolean(currentRingValid),
-      },
-    },
-    "*"
-  );
+var tabindex = 100;
+var sliderBGHover = 0;
+var sliderHoverName = "";
+var sliderDown = 0;
+var sliderGroupActive = 0;
+var currentRingValid = 1;
+var mouseDown = 0;
  
-  return;
-};
- 
-ringCount = 0;
-changeMaterial = function () {
-  gradeIndex = ringObj.gradeIndex == undefined ? 0 : ringObj.gradeIndex;
-  if (materialsArr[currentMaterial].material.length == 1) {
-    gradeIndex = 0;
-  }
- 
-  if (ringMat) {
-    ringMat.color.setHex(
-      materialsArr[currentMaterial].material[gradeIndex].color
-    );
-    ringMat.metalness =
-      materialsArr[currentMaterial].material[gradeIndex].metalness;
- 
-    $(".btnFinish1, .btnFinish2").removeClass("btnOn");
- 
-    if (ringObj.usefinish == undefined) {
-      ringObj.usefinish = 0;
-      if ($(".finishTypeSelecter input").prop("checked")) {
-        console.log("HERE");
-        $(".finishTypeSelecter input").click();
-      }
-    }
- 
-    if (
-      ringObj.finish == "Gloss" ||
-      materialsArr[currentMaterial].material[gradeIndex].matte == -1
-    ) {
-      $(".btnFinish1").addClass("btnOn");
-      ringMat.roughness =
-        materialsArr[currentMaterial].material[gradeIndex].roughness;
-    } else {
-      $(".btnFinish2").addClass("btnOn");
-      ringMat.roughness =
-        materialsArr[currentMaterial].material[gradeIndex].matte;
-    }
-    if (materialsArr[currentMaterial].material[gradeIndex].matte == -1) {
-      $(".finishTypeSelecter").hide();
-    } else {
-      $(".finishTypeSelecter").show();
-    }
-    ringMat.bumpScale =
-      materialsArr[currentMaterial].material[gradeIndex].bumpScale;
-  }
-  $(".matTitleDiv").html(materialsArr[currentMaterial].title[langIndex]);
-  $(".selectedMaterialDiv img").attr(
-    "src",
-    materialsArr[currentMaterial].material[gradeIndex].thumb
-  );
-  $(".matGradeDiv").html("");
- 
-  if (materialsArr[currentMaterial].grades.length > 1) {
-    for (var x = 0; x < materialsArr[currentMaterial].grades.length; x++) {
-      btnClass = "";
-      if (gradeIndex == undefined) {
-        if (x == 0) {
-          btnClass = ' class="btnOn"';
-        }
-      } else {
-        if (x == gradeIndex) {
-          btnClass = ' class="btnOn"';
-        }
-      }
-      $(".matGradeDiv").append(
-        "<button" +
-          btnClass +
-          ">" +
-          materialsArr[currentMaterial].grades[x].title[langIndex] +
-          "</button>"
-      );
-    }
-  }
-  $(".materialListDiv div").removeClass("ringOn");
-  $('.materialListDiv div[index="' + currentMaterial + '"]').addClass("ringOn");
-  $(".matGradeDiv button").bind("click", function () {
-    $(".matGradeDiv button").removeClass("btnOn");
-    $(this).addClass("btnOn");
-    ringObj.gradeIndex = getGradeIndex();
-    if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
-      ringObj.finish = "Gloss";
-      ringObj.glossMatteIndex = 0;
-      userRings[currentUserRing].glossMatteIndex = 0;
-    }
-    changeMaterial();
-  });
-  $(".materialsPopupDv").hide();
- 
- if (currentMaterial == 3 && (ringObj.gradeIndex == 1 || ringObj.gradeIndex == 3)) {
-    $(".finishType").prop("checked", true);
-    ringObj.usefinish = 1;
-    //$('.titleButton .btnOn').click();
-    $(".finishTypeSelecter .titleButton, .disclaimer").show();
-    $(".finishType").prop("disabled", true);
-  } else {
-    $(".finishType").prop("disabled", false);
-  }
- 
-  ringChanged = 0;
-  doRingChanged();
-};
- 
-function loadRingFromJSON() {
-  //return false;
-  //console.log(userRings);
-  //console.log('loadRingFromJSON currentUserRing = ' + currentUserRing);
-  ringObj = ringsObj[userRings[currentUserRing].id];
- 
-  ringObj.id = userRings[currentUserRing].id;
-  ringObj.finish = userRings[currentUserRing].finish;
-  ringObj.usefinish = userRings[currentUserRing].usefinish;
-  ringObj.gradeIndex = userRings[currentUserRing].gradeIndex;
-  ringObj.glossMatteIndex = userRings[currentUserRing].glossMatteIndex;
-  ringObj.currentMaterial = userRings[currentUserRing].currentMaterial;
-  //log('loadRingFromJSON - changing ringObj mat to id ' + ringObj.currentMaterial);
-  //currentRingType = ringObj.id;
- 
-  //log('Load from JSON ' + currentRingType);
- 
-  $(".ringThumb").removeClass("ringOn");
-  $(".ringThumb").eq(ringObj.id).addClass("ringOn");
- 
-  params = Object.keys(ringObj.params);
-  for (var y = 0; y < params.length; y++) {
-    if (typeof ringObj.params[params[y]].val != "undefined") {
-      ringObj.params[params[y]].val =
-        userRings[currentUserRing].params[params[y]];
-    } else {
-      ringObj.params[params[y]].values =
-        userRings[currentUserRing].params[params[y]];
-    }
-  }
- 
-  currentMaterial = userRings[currentUserRing].currentMaterial;
-  //log('var currentMaterialset to id ' + currentMaterial);
- 
-  //clearCanvas2();
-  //ringObj.updateRingPath();
- 
-  slidersObj = Object.keys(ringObj.params);
-  $(".controls").html("");
-  for (x = 0; x < slidersObj.length; x++) {
-    $(".controls").append(
-      '<div class="sliderDiv" slidername="' + slidersObj[x] + '">1</div>'
-    );
-    createSlider(slidersObj[x]);
-  }
-  changeMaterial();
-  $(".ringThumb").eq(ringObj.id).click();
-}
- 
-function doRingChanged() {
-  if (ringChanged == 1 || mouseDown == 1) {
-    return false;
-  }
-  //log('doRingChanged');
-  ringChanged = 1;
-  userRings[currentUserRing] = getRingData();
-  updatePrice();
-}
- 
-function getRingData() {
-  //log('getRingData');
-  obj = ringObj;
-  cartDescription = "";
-  let cartData = {};
- 
-  if (obj.usefinish == undefined) {
-    obj.usefinish = 0;
-  }
-  console.log("HHERE");
-  $(".finishTypeSelecter input").prop(
-    "checked",
-    obj.usefinish == 0 ? false : true
-  );
-  if (obj.glossMatteIndex == undefined) {
-    obj.glossMatteIndex = 0;
-  }
-  if (obj.gradeIndex == undefined) {
-    obj.gradeIndex = 0;
-  }
-  if (obj.currentMaterial == undefined) {
-    //log('Material undefined - setting to 0');
-    obj.currentMaterial = 0;
-  }
- 
-  cartData[$(".ringTypeSelecter h2").html()] = obj.id + 1;
- 
-  cartData["Materiaal"] = materialsArr[obj.currentMaterial].title[langIndex];
-  try {
-    if (obj.currentMaterial != 1 && obj.gradeIndex != -1) {
-      cartData["Materiaal"] =
-        cartData["Materiaal"] +
-        " (" +
-        materialsArr[obj.currentMaterial].grades[obj.gradeIndex].title[
-          langIndex
-        ] +
-        ")";
-    }
-  } catch (e) {
-    console.error(e);
-  }
- 
-  jrp = {};
-  params = Object.keys(obj.params);
-  for (var y = 0; y < params.length; y++) {
-    if (typeof obj.params[params[y]].val != "undefined") {
-      jrp[params[y]] = obj.params[params[y]].val;
-      cartData[obj.params[params[y]].label[langIndex]] =
-        obj.params[params[y]].val + "mm";
-    } else {
-      jrp[params[y]] = obj.params[params[y]].values;
- 
-      cartData[obj.params[params[y]].label[langIndex]] =
-        obj.params[params[y]].values[0] +
-        "mm , " +
-        obj.params[params[y]].values[1] +
-        "mm";
-    }
-  }
-  cartData[getFinish("title")] = getFinish("value");
-
-  // Leverancierskorting toevoegen direct na Afwerking
-  if (discountActive) {
-    cartData["Leverancierskorting"] = "15% toegepast";
-  }
- 
-  var rn = "Ring";
-  if (obj.price == undefined) {
-    ("price is undefined again");
-  }
-  //log('Returning ring object with material id ' + obj.currentMaterial);
-  obj = {
-    price: obj.price,
-    id: obj.id,
-    currentMaterial: obj.currentMaterial,
-    glossMatteIndex: obj.glossMatteIndex,
-    finish: obj.finish,
-    usefinish: obj.usefinish,
-    gradeIndex: obj.gradeIndex,
-    params: jrp,
-    ringName: rn,
-    cartData,
-  };
-  return obj;
-}
- 
-function saveRingToSession() {
-  for (x = 0; x < userRings.length; x++) {
-    if (loggedInUserType < 2) {
-      userRings[x].tax = 1;
-    } else {
-      userRings[x].tax = 0;
-    }
-  }
- 
-  console.log(userRings[currentUserRing]);
-  updateShopify(userRings[currentUserRing]);
-  return;
- 
-  $.ajax({
-    data: { action: "saveRingData", userRings: JSON.stringify(userRings) },
-    url: "webservice.php?" + Math.random() * Math.random(),
-    success: function (response) {
-      //log(response);
-    },
-    error: function (e) {
-      //log(e)
-    },
-  });
-}
- 
-function updatePrice() {
-  //log('updating price');
-  if (!ringObj) {
-    return false;
-  }
-  if (stopRendering == 1) {
-    render();
-  }
-  if (userRings.length < 1) {
-    userRings[currentUserRing] = getRingData();
-  }
-  $(".ringPriceDiv h1").html("");
-  gradeIndex =
-    userRings[currentUserRing].gradeIndex == undefined
-      ? 0
-      : userRings[currentUserRing].gradeIndex;
- 
-  if (currentMaterial >= 4) {
-    rodSizeIndex = 0;
-    volume = calculateVolume(ring)[0];
-    //log('V = ' + volume);
-    goldGrams =
-      (volume / 1000) *
-      materialsArr[currentMaterial].grades[gradeIndex].purity *
-      materialsArr[currentMaterial].grades[gradeIndex].SM;
- 
-    //log('GP = ' + goldPrice);
-    //log('GG = ' + goldGrams);
- 
-    ringPrice = goldGrams * goldPrice + 40;
-    //log('RP = ' + ringPrice);
-    ringPrice *=
-      materialsArr[currentMaterial].grades[gradeIndex].margin[loggedInUserType];
- 
-    //log('RP = ' + ringPrice);
-    if (userRings[currentUserRing].usefinish > 0) {
-      finishPrice =
-        materialsArr[currentMaterial].grades[gradeIndex].finishPrice[
-          userRings[currentUserRing].glossMatteIndex
-        ];
-      glossMatteIndex = userRings[currentUserRing].glossMatteIndex;
-      ringPrice += finishPrice;
-      //log('1.) Adding finish price', finishPrice, glossMatteIndex);
-    }
-  } else {
-    //log('Getting price for ring index' + currentUserRing);
- 
-    if (gradeIndex < 0 || gradeIndex == undefined) {
-      gradeIndex = userRings[currentUserRing].gradeIndex = 0;
-    }
-    rodSizeIndex = 0;
-    if (
-      materialsArr[currentMaterial].grades[gradeIndex].ppmm[rodSizeIndex] == 0
-    ) {
-      ringPrice = 1;
-    } else {
-      if (
-        ringObj.totalHeight >
-        materialsArr[currentMaterial].grades[gradeIndex].maxDiameter[0] / 2
-      ) {
-        rodSizeIndex = 1;
-      }
-      ringPrice =
-        (ringObj.ringDepth +
-          materialsArr[currentMaterial].grades[gradeIndex].cutWidth[
-            rodSizeIndex
-          ]) *
-        materialsArr[currentMaterial].grades[gradeIndex].ppmm[rodSizeIndex];
-    }
- 
-    shapeCost = 0;
-    if (materialsArr[currentMaterial].grades[gradeIndex].shapeTest) {
-      shapeCost =
-        materialsArr[currentMaterial].grades[gradeIndex].shapeTest[
-          rodSizeIndex
-        ];
-    }
- 
-    ringPrice = ringPrice.toFixed(3);
-    ringPrice /= 1;
-    ringPrice =
-      (ringPrice *
-        materialsArr[currentMaterial].grades[gradeIndex].customerFactor[
-          rodSizeIndex
-        ] +
-        materialsArr[currentMaterial].grades[gradeIndex].startCost[
-          rodSizeIndex
-        ]) *
-        materialsArr[currentMaterial].grades[gradeIndex].margin[rodSizeIndex][
-          loggedInUserType
-        ] +
-      ringObj.shapePrice;
-    if (userRings[currentUserRing].usefinish > 0) {
-      finishPrice =
-        materialsArr[currentMaterial].grades[gradeIndex].finishPrice[
-          userRings[currentUserRing].glossMatteIndex
-        ];
-      glossMatteIndex = userRings[currentUserRing].glossMatteIndex;
-      ringPrice += finishPrice;
-      //log('2.) Adding finish price', finishPrice, glossMatteIndex);
-    }
- 
-    if (currentMaterial == 2) {
-      ringPrice = 10;
-    }
-  }
-
-  // Toeslag afronding: +€2,50 per afronding (binnen/buiten) als > 0
-  if (ringObj.params.ringEdgeCurve && ringObj.params.ringEdgeCurve.val > 0) {
-    ringPrice = parseFloat(ringPrice) + 2.5;
-  }
-  if (ringObj.params.ringInnerEdgeCurve && ringObj.params.ringInnerEdgeCurve.val > 0) {
-    ringPrice = parseFloat(ringPrice) + 2.5;
-  }
-
-  ringPrice = ringPrice.toFixed(2);
-  userRings[currentUserRing].price = ringPrice;
-  ringObj.price = ringPrice;
- 
-  $(".ringPriceSpan").eq(currentUserRing).attr("price", ringPrice);
-  $(".ringPriceSpan")
-    .eq(currentUserRing)
-    .html("&euro; " + formatPrice(ringPrice));
- 
-  totalPrice = 0;
-  for (var a = 0; a < userRings.length; a++) {
-    rp = Number(userRings[a].price / 1).toFixed(2);
-    totalPrice = Number(totalPrice).toFixed(2);
-    totalPrice = (Number(totalPrice) + Number(rp)).toFixed(2);
-    //totalPrice = (totalPrice.toFixed(2)/1) + (.toFixed(2)/1);
-    //totalPrice = totalPrice.toFixed(2);
-  }
- 
-  //log('Price changed to ' + ringPrice + ' New total price = ' + totalPrice + ' Current ring = ' + currentUserRing);
-
-  // Kortingscode: 15% op de basisprijs
-  if (discountActive) {
-    var originalPrice = (totalPrice / 1).toFixed(2);
-    totalPrice = (totalPrice * 0.85).toFixed(2);
-    userRings[currentUserRing].price = totalPrice;
-    userRings[currentUserRing].originalPrice = originalPrice;
-    if (userRings[currentUserRing].cartData) {
-      userRings[currentUserRing].cartData["Leverancierskorting"] = "15% toegepast";
-    }
-    ringObj.price = totalPrice;
-    $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
-    $(".ringPriceDiv h1").html("<strike>&euro; " + formatPrice(originalPrice) + "</strike> &euro; " + formatPrice(totalPrice));
-    if (loggedInUserType < 2) {
-      $(".ringPriceDiv h1").html("<strike>&euro; " + formatPrice(originalPrice * 1.21) + "</strike> &euro; " + formatPrice(totalPrice * 1.21));
-      $(".ringPriceDiv h1").eq(currentUserRing).append("<br><span> (incl. 21% btw) </span>");
-    }
-  } else {
-    userRings[currentUserRing].originalPrice = null;
-    if (userRings[currentUserRing].cartData) {
-      delete userRings[currentUserRing].cartData["Leverancierskorting"];
-    }
-    $(".ringPriceDiv h1").attr("totalPrice", totalPrice);
-    $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice));
-    if (loggedInUserType < 2) {
-      $(".ringPriceDiv h1").html("&euro; " + formatPrice(totalPrice * 1.21));
-      $(".ringPriceDiv h1").eq(currentUserRing).append("<br><span> (incl. 21% btw) </span>");
-    }
-  }
-  saveRingToSession();
-}
- 
-doRingTypeClick = function () {
-  currentRingType = $(this).attr("index") / 1;
-  //log('HERE!!!!!!', currentRingType);
-  $(".ringThumb").attr("style", "").removeClass("ringOn");
-  $(this).addClass("ringOn");
-  setupRing(currentRingType);
-  return false;
-  $(".ringTypeSelecter .ringThumb")
-    .unbind("click")
-    .bind("click", doRingTypeClick);
-};
- 
-function setupRing(id) {
-  if (ringObj != undefined) {
-    currentRingInnerWidth = ringObj.params.ringInnerWidth.val;
-    try {
-      currentRingHeight = ringObj.params.ringHeightVal.val;
-      currentRingDepth = ringObj.params.ringDepth.val;
-    } catch (e) {}
-  }
- 
-  ringObj = jQuery.extend({}, ringsObj[id]);
-  ringObj.id = id;
-  /*
-	ringObj.finish = 'Gloss';
-	ringObj.gradIndex = 0;
-	ringObj.glossMatteIndex = 0;
-    */
-  ringObj.currentMaterial = currentMaterial;
-  if (ringObj.usefinish == 0) {
-    $(".finishTypeSelecter .titleButton, .disclaimer").hide();
-  }
- 
-  if (currentRingInnerWidth != undefined) {
-    ringObj.params.ringInnerWidth.val = currentRingInnerWidth;
-    try {
-      ringObj.params.ringHeightVal.val = currentRingHeight;
-      ringObj.params.ringDepth.val = currentRingDepth;
-    } catch (e) {}
-  }
- 
-  if (ringFromSession == 1) {
-    ringFromSession = 0;
-    loadRingFromJSON();
-  } else {
-    userRings[currentUserRing] = getRingData();
-  }
- 
-  clearCanvas2();
-  ringObj.updateRingPath();
-  slidersObj = Object.keys(ringObj.params);
-  $(".controls").html("");
-  for (x = 0; x < slidersObj.length; x++) {
-    $(".controls").append(
-      '<div class="sliderDiv" slidername="' + slidersObj[x] + '">1</div>'
-    );
-    createSlider(slidersObj[x]);
-  }
- 
-  updateAffected();
-  for (x = 0; x < slidersObj.length; x++) {
-    if (ringObj.params[slidersObj[x]].val != undefined) {
-      val = $("." + slidersObj[x] + "Slider").slider("value");
-      slideActionNoRange($("." + slidersObj[x] + "Slider"), val);
-    } else {
-      val = $("." + slidersObj[x] + "Slider").slider("value");
-      vals = $("." + slidersObj[x] + "Slider").slider("values");
-      sliderActionRange($("." + slidersObj[x] + "Slider"), vals, val);
-    }
-  }
-  changeMaterial();
-}
- 
-$(document).ready(function () {
-  $(".btnShowHideRing").bind("click", function () {
-    ring.visible = !ring.visible;
-  });
-  $(".ringThumb").bind("mouseenter", function () {
-    $(this).css("background-color", "#303030");
-  });
-  $(".ringThumb").bind("mouseleave", function () {
-    $(this).css("background-color", "#000");
-  });
-  $(".autoSpin").bind("change", function () {
-    if ($(this).prop("checked")) {
-      controls.autoRotate = true;
-    } else {
-      controls.autoRotate = false;
-    }
-  });
-  $(".btnAddToCart").bind("click", function () {
-    if (currentRingValid == 0) {
-      showRingSizeError();
-      return false;
-    }
-    ringJSON = JSON.stringify(userRings);
-    $(".cartForm .userRings").val(ringJSON);
-    setTimeout(function () {
-      $(".cartForm").submit();
-    }, 500);
-  });
- 
-  if ($(".materialDesigner").css("display") == "block") {
-    $(".materialDesigner input").bind("keyup", doMaterialDesignerUpdate);
-    doMaterialDesignerUpdate();
-  }
-  $(".langSelect div").bind("click", function () {
-    $(".langSelect div").removeClass("langOn");
-    $(this).addClass("langOn");
-    langIndex = $(this).index(".langSelect div") == 0 ? 1 : 0;
-    sliders = [];
-    for (var k in ringObj.params) sliders.push(k);
-    replaceSliders(sliders);
-    switchLanguage();
-  });
- 
-  $(".ringTypeSelecter .ringThumb").each(function () {
-    $(this).attr("index", ringCount);
-    ringCount++;
-  });
- 
-  $(".ringTypeSelecter .ringThumb").bind("click", doRingTypeClick);
- 
-  $(".materialListDiv div").bind("click", function () {
-    $(".btnFinish2").removeClass("btnOn");
-    $(".btnFinish1").addClass("btnOn");
-    if ($(this).hasClass("matGradeDiv")) {
-      return false;
-    }
-    currentMaterial = $(this).attr("index") / 1;
-    //log('currentMaterial = ' + currentMaterial);
-    userRings[currentUserRing].gradeIndex = 0;
-    userRings[currentUserRing].glossMatteIndex = 0;
-    userRings[currentUserRing].finish = "Gloss";
-    ringObj.currentMaterial = currentMaterial;
-    //log('ringObj.currentMaterial = ' + currentMaterial);
-    userRings[currentUserRing].currentMaterial = currentMaterial;
-    //log('userRings[currentUserRing].currentMaterial = ' + userRings[currentUserRing].currentMaterial);
-    $(".selectedMaterialDiv img").attr(
-      "src",
-      materialsArr[currentMaterial].material[0].thumb
-    );
-    changeMaterial();
-  });
- 
-  $(".btnScreenShot").bind("click", function () {
-    BABYLON.Tools.CreateScreenshot(
-      engine,
-      camera,
-      { width: 2048, height: 2048 },
-      function (data) {
-        window.open(data, "_blank");
-      }
-    );
-  });
- 
-  $(".bgToggle").bind("click", function () {
-    if ($("html, body").css("background-color") == "rgb(0, 0, 0)") {
-      $("html, body").css("background-color", "rgb(255, 255, 255)");
-      scene.clearColor = new BABYLON.Color3(255, 255, 255);
-      materialPlane.specularColor = new BABYLON.Color3(255, 255, 255);
-      materialPlane.diffuseTexture = null; //new BABYLON.Texture("textures/planeW.jpg", scene);
-    } else {
-      $("html, body").css("background-color", "rgb(0, 0, 0)");
-      scene.clearColor = new BABYLON.Color3(255, 255, 255);
-      materialPlane.specularColor = new BABYLON.Color3(255, 255, 255);
-      materialPlane.diffuseTexture = new BABYLON.Texture(
-        "textures/plane.jpg",
-        scene
-      );
-    }
-    plane1.material = materialPlane;
-  });
-  for (x = 0; x < ringsObj.length; x++) {
-    selected = "";
-    if (x == 7) {
-      selected = ' selected="selected"';
-    }
-    $(".ringType").append(
-      '<option value="' + x + '" ' + selected + ">Ring " + (x + 1) + "</option>"
-    );
-  }
-  //$(".ringType option:eq(1)").attr("selected", "selected");
-  $(".ringType").change(function () {
-    animOut();
-  });
-  //updatePrice();
- 
-  $(".btnChangeMaterial").bind("click", function () {
-    $(".materialsPopupDv").show();
-    resizeCanvas();
-  });
-  $(".btnMaterialPopupClose").bind("click", function () {
-    $(".materialsPopupDv").hide();
-  });
-  $(".btnFinish1, .btnFinish2").bind("click", function () {
-    $(".btnFinish1, .btnFinish2").removeClass("btnOn");
-    $(this).addClass("btnOn");
-    if ($(this).hasClass("btnFinish1")) {
-      ringObj.finish = "Gloss";
-      ringObj.glossMatteIndex = 0;
-    } else {
-      ringObj.finish = "Matte";
-      ringObj.glossMatteIndex = 1;
-    }
-    changeMaterial();
-  });
-  $(".materialListDiv span").hide().eq(langIndex).show();
-  //loadRingFromJSON();
-  setupRing(0);
-  $(".finishTypeSelecter input").bind("change", function () {
-    if ($(this).prop("checked")) {
-      ringObj.usefinish = 1;
-      $(".titleButton .btnOn").click();
-      $(".finishTypeSelecter .titleButton, .disclaimer").show();
-    } else {
-      ringObj.usefinish = 0;
-      ringObj.finish = "None";
-      $(".finishTypeSelecter .titleButton, .disclaimer").hide();
-    }
-    changeMaterial();
-  });
+$(document).bind("mousedown", function () {
+  mouseDown = 1;
 });
+$(document).bind("mouseup", function () {
+  mouseDown = 0;
+});
+ 
+function resetSliderBG() {
+  if (mouseDown == 0) {
+    $(".sliderDiv").css("background-color", "#0a0a0a");
+  }
+}
+ 
+function createSlider(sliderObj) {
+  if (ringObj.params[sliderObj].exclude) {
+    return false;
+  }
+  ringVal = ringObj.params[sliderObj].val;
+ 
+  if (ringVal > ringObj.params[sliderObj].max[getMaterialIndex()]) {
+    ringVal = ringObj.params[sliderObj].val =
+      ringObj.params[sliderObj].max[getMaterialIndex()];
+  }
+  if (ringVal < ringObj.params[sliderObj].min[getMaterialIndex()]) {
+    ringVal = ringObj.params[sliderObj].val =
+      ringObj.params[sliderObj].min[getMaterialIndex()];
+  }
+  sliderInput =
+    '<input class="sliderInput sliderInput1" tabindex="' +
+    tabindex +
+    '" value="' +
+    ringVal +
+    '">';
+  tabindex++;
+  if (ringObj.params[sliderObj].range) {
+    ringVal1 = ringObj.params[sliderObj].values[1];
+    ringVal2 = ringObj.params[sliderObj].values[0];
+    sliderInput =
+      '<input class="sliderInput sliderInput1" tabindex="' +
+      (tabindex + 1) +
+      '" value="' +
+      ringVal1 +
+      '"><input class="sliderInput sliderInput2" tabindex="' +
+      tabindex +
+      '" value="' +
+      ringVal2 +
+      '">';
+    tabindex += 2;
+  }
+ 
+  $("[slidername=" + sliderObj + "]").html(
+    sliderInput +
+      "<h2>" +
+      ringObj.params[sliderObj].label[langIndex] +
+      '</h2><div class="sliderContainer"><div class="markersDiv">' +
+      returnSliderMarkers(
+        ringObj.params[sliderObj].min[getMaterialIndex()] * 10,
+        ringObj.params[sliderObj].max[getMaterialIndex()] * 10,
+        ringObj.params[sliderObj].step
+      ) +
+      '</div><input type="text" id="' +
+      sliderObj +
+      'Slider" readonly style="border:0; color:#f6931f; font-weight:bold;"><div class="' +
+      sliderObj +
+      'Slider slider" style="width:100%;" param="' +
+      sliderObj +
+      '" steps="' +
+      (ringObj.params[sliderObj].max[getMaterialIndex()] -
+        ringObj.params[sliderObj].min[getMaterialIndex()] * 10) +
+      '"></div></div>' +
+      (ringObj.params[sliderObj].surcharge && ringObj.params[sliderObj].val > 0
+        ? '<div class="disclaimer">(+&euro; ' + ringObj.params[sliderObj].surcharge.toFixed(2) + ' toeslag voor afronding)</div>'
+        : '') +
+      '</div>'
+  );
+ 
+  $(".sliderDiv")
+    .unbind("mouseenter")
+    .bind("mouseenter", function () {
+      if (mouseDown == 1) {
+        return false;
+      }
+      sliderBGHover = 1;
+      sliderHoverName = $(this).attr("sliderName");
+      drawCanvasPath(lastPaths);
+      //$(this).css("background-color","#333");
+    });
+  $(".sliderDiv")
+    .unbind("mouseleave")
+    .bind("mouseleave", function () {
+      if (mouseDown == 1) {
+        return false;
+      }
+      sliderBGHover = 0;
+      drawCanvasPath(lastPaths);
+      //resetSliderBG();
+    });
+ 
+  if (ringObj.params[sliderObj].groupName) {
+    groupClass = "";
+    if (ringObj[ringObj.params[sliderObj].groupName].grouped == 1) {
+      groupClass = "glyphicon-link-on";
+    }
+    groupButton = $(
+      '<div class="glyphicon glyphicon-link ' +
+        groupClass +
+        '" group="' +
+        ringObj.params[sliderObj].groupName +
+        '" slider="' +
+        sliderObj +
+        '"></div>'
+    );
+    $("#" + sliderObj + "Slider")
+      .parent()
+      .parent()
+      .prepend(groupButton);
+    groupButton.bind("click", function () {
+      groupName = $(this).attr("group");
+      if ($(this).hasClass("glyphicon-link-on")) {
+        $('div[group="' + groupName + '"]').removeClass("glyphicon-link-on");
+        ringObj[groupName].grouped = 0;
+        sliderGroupActive = 0;
+        drawCanvasPath(lastPaths);
+      } else {
+        $('div[group="' + groupName + '"]').addClass("glyphicon-link-on");
+        ringObj[groupName].grouped = 1;
+        updateGroupValues(ringObj[groupName].group, $(this).attr("slider"));
+        sliderGroupActive = 1;
+      }
+    });
+  }
+  if (ringObj.params[sliderObj].range) {
+    range = false;
+    if (ringObj.params[sliderObj].range != undefined) {
+      range = true;
+    }
+    $("." + sliderObj + "Slider").slider({
+      range: range,
+      orientation: "horizontal",
+      range: true,
+      min: ringObj.params[sliderObj].min[getMaterialIndex()] * 10,
+      max: ringObj.params[sliderObj].max[getMaterialIndex()] * 10,
+      step: ringObj.params[sliderObj].step,
+      values: [ringVal2 * 10, ringVal1 * 10],
+      start: function () {
+        mouseDown = 1;
+        sliderDown = 1;
+      },
+      stop: function (event, ui) {
+        mouseDown = 0;
+        sliderBGHover = 0;
+        sliderActionRange(
+          $(this),
+          ui.values,
+          ui.value,
+          "sliderInput" + (ui.handleIndex + 1)
+        );
+        returnShapes();
+        ringChanged = 0;
+        doRingChanged();
+      },
+      slide: function (event, ui) {
+        if (ui.values[0] + ringObj.params[sliderObj].spacing > ui.values[1]) {
+          return false;
+        }
+        sliderActionRange(
+          $(this),
+          ui.values,
+          ui.value,
+          "sliderInput" + (ui.handleIndex + 1)
+        );
+        //returnShapes();
+      },
+    });
+  } else {
+    $("." + sliderObj + "Slider").slider({
+      range: range,
+      orientation: "horizontal",
+      range: "min",
+      min: ringObj.params[sliderObj].min[getMaterialIndex()] * 10,
+      max: ringObj.params[sliderObj].max[getMaterialIndex()] * 10,
+      step: ringObj.params[sliderObj].step,
+      value: ringVal * 10,
+      start: function () {
+        mouseDown = 1;
+        //returnShapesInterval = setInterval(returnShapes, 50);
+      },
+      stop: function (event, ui) {
+        mouseDown = 0;
+        sliderBGHover = 0;
+        slideActionNoRange($(this), ui.value);
+        //clearInterval(returnShapesInterval);
+        returnShapes();
+        ringChanged = 0;
+        doRingChanged();
+      },
+      slide: function (event, ui) {
+        slideActionNoRange($(this), ui.value);
+        //returnShapes();
+      },
+    });
+  }
+  $(".sliderInput").unbind("keyup").bind("keyup", updateSliderInput);
+}
+ 
+var returnShapesInterval;
+ 
+sliderActionRange = function (slider, vals, val, from) {
+  slider
+    .parent()
+    .parent()
+    .find(".sliderInput")
+    .css("background-color", "#0a0a0a")
+    .css("color", "#FFF");
+  if (vals[1] - vals[0] <= 0) {
+    to = "sliderInput2";
+    if (from == "sliderInput2") {
+      to = "sliderInput1";
+    }
+    slider
+      .parent()
+      .parent()
+      .find("." + to)
+      .css("background-color", "#510000")
+      .css("color", "#FFF");
+    return false;
+  }
+ 
+  slider
+    .parent()
+    .parent()
+    .find(".sliderInput1")
+    .val(vals[1] / 10);
+  slider
+    .parent()
+    .parent()
+    .find(".sliderInput2")
+    .val(vals[0] / 10);
+ 
+  slider.slider("values", vals);
+  ringObj.params[slider.attr("param")].values = [vals[0] / 10, vals[1] / 10];
+  updateAffected();
+  returnShapes();
+};
+ 
+slideActionNoRange = function (slider, val, from) {
+  slider
+    .parent()
+    .parent()
+    .find(".sliderInput")
+    .css("background-color", "#0a0a0a")
+    .css("color", "#FFF");
+  if (from != "input") {
+    slider
+      .parent()
+      .parent()
+      .find(".sliderInput1")
+      .val(val / 10);
+  }
+  currentSliderParam = val;
+  ringObj.params[slider.attr("param")].val = val / 10;
+ 
+  if (ringObj.params[slider.attr("param")].affects) {
+    updateDependencies(val, ringObj.params[slider.attr("param")].affects);
+  }
+  if (ringObj.params[slider.attr("param")].groupName) {
+    updateSliderGroup(slider.attr("param"), val);
+  }
+  updateAffected();
+  returnShapes();
+};
+ 
+function updateSliderInput() {
+  val = $(this).val();
+  if (val[val.length - 1] == ".") {
+    return false;
+  }
+  val = val / 1;
+  slider = $(this).parent().find(".slider");
+  $(this).css("background-color", "#0a0a0a").css("color", "#FFF");
+  if (isNaN(val)) {
+    $(this).css("background-color", "#510000").css("color", "#FFF");
+    return false;
+  }
+ 
+  if (
+    val > ringObj.params[slider.attr("param")].max[getMaterialIndex()] ||
+    val < ringObj.params[slider.attr("param")].min[getMaterialIndex()]
+  ) {
+    $(this).css("background-color", "#510000").css("color", "#FFF");
+    return false;
+  }
+ 
+  if (ringObj.params[slider.attr("param")].values == undefined) {
+    slider.slider("value", val * 10);
+    slideActionNoRange(slider, val * 10, "input");
+  } else {
+    vals = slider.slider("values");
+    newVals = [vals[0], vals[1]];
+    if ($(this).hasClass("sliderInput2")) {
+      input = "sliderInput1";
+      sVals = slider.slider("values");
+ 
+      if (val * 10 + ringObj.params[slider.attr("param")].spacing >= sVals[1]) {
+        newVals = [
+          sVals[1] - ringObj.params[slider.attr("param")].spacing,
+          sVals[1],
+        ];
+        $(this).val(
+          (sVals[1] - ringObj.params[slider.attr("param")].spacing) / 10
+        );
+        $(this).css("background-color", "#510000").css("color", "#FFF");
+        slider.slider("values", newVals);
+        sliderActionRange(slider, newVals, val, input);
+        val = newVals[0];
+        return false;
+      }
+      if (val * 10 >= vals[1]) {
+        $(this).css("background-color", "#510000").css("color", "#FFF");
+      }
+      newVals[0] = val * 10;
+    } else {
+      input = "sliderInput2";
+      sVals = slider.slider("values");
+ 
+      if (val * 10 - ringObj.params[slider.attr("param")].spacing <= sVals[0]) {
+        newVals = [
+          sVals[0],
+          sVals[0] + ringObj.params[slider.attr("param")].spacing,
+        ];
+        $(this).val(
+          (sVals[1] - ringObj.params[slider.attr("param")].spacing) / 10
+        );
+        $(this).css("background-color", "#510000").css("color", "#FFF");
+        slider.slider("values", newVals);
+        sliderActionRange(slider, newVals, val, input);
+        val = newVals[0];
+        return false;
+      }
+      if (val * 10 <= vals[0]) {
+        $(this).css("background-color", "#510000").css("color", "#FFF");
+        return false;
+      }
+      newVals[1] = val * 10;
+    }
+    if (newVals[0] == vals[0] && newVals[1] == vals[1]) {
+      return false;
+    }
+    slider.slider("values", newVals);
+    sliderActionRange(slider, newVals, val, input);
+  }
+  checkRingChanged();
+}
+ 
+function updateGroupValues(groupArr, master) {
+  for (b = 0; b < groupArr.length; b++) {
+    if (groupArr[b] != master) {
+      ringObj.params[groupArr[b]].val = ringObj.params[master].val;
+      ringObj.params[groupArr[b]].value = master.value;
+    }
+  }
+  replaceSliders(groupArr);
+  returnShapes();
+}
+ 
+updateSliderGroup = function (sliderName, val) {
+  obj = ringObj[ringObj.params[sliderName].groupName];
+  if (obj.grouped == 0) {
+    return false;
+  }
+  for (z = 0; z < obj.group.length; z++) {
+    if (sliderName != obj.group[z]) {
+      $("." + obj.group[z] + "Slider").slider("value", val);
+      ringObj.params[obj.group[z]].val = val / 10;
+      $("." + obj.group[z] + "Slider")
+        .parent()
+        .parent()
+        .find(".sliderInput1")
+        .val(val / 10);
+    }
+  }
+};
+ 
+function replaceSliders(sliders) {
+  for (z = 0; z < sliders.length; z++) {
+    $('div[slidername="' + sliders[z] + '"]').html("");
+    createSlider(sliders[z]);
+  }
+}
+ 
+updateAffected = function () {
+  currentRingValid = 1;
+  var maxOuterDiameter = [31, 29, 29, 37, 32];
+  var effectiveMax = maxOuterDiameter[getMaterialIndex()];
+  if (getMaterialIndex() == 3 && getGradeIndex() >= 2) {
+    effectiveMax = 24.9;
+  }
+  max = effectiveMax / 2;
+  if (ringObj.totalHeight > max) {
+    currentRingValid = 0;
+    for (y = 0; y < ringObj.heightSliders.length; y++) {
+      var sliderDiv = $("." + ringObj.heightSliders[y] + "Slider")
+        .parent()
+        .parent();
+      sliderDiv.addClass("sliderRedBG");
+      if (sliderDiv.find(".sliderWarning").length === 0) {
+        sliderDiv.append('<div class="sliderWarning">Buitenmaat te groot voor dit materiaal</div>');
+      }
+    }
+  } else {
+    for (y = 0; y < ringObj.heightSliders.length; y++) {
+      var sliderDiv = $("." + ringObj.heightSliders[y] + "Slider")
+        .parent()
+        .parent();
+      sliderDiv.removeClass("sliderRedBG");
+      sliderDiv.find(".sliderWarning").remove();
+    }
+  }
+};
+ 
+updateDependencies = function (val, sliders) {
+  val = val / 10;
+  for (var y = 0; y < sliders.length; y++) {
+    //console.log(sliders[y])
+    if (ringObj.params[sliders[y]].newMax) {
+      ringObj.params[sliders[y]].max[getMaterialIndex()] =
+        ringObj.params[sliders[y]].newMax();
+      if (
+        ringObj.params[sliders[y]].val >=
+        ringObj.params[sliders[y]].max[getMaterialIndex()]
+      ) {
+        ringObj.params[sliders[y]].val =
+          ringObj.params[sliders[y]].max[getMaterialIndex()] / 1;
+      }
+    }
+ 
+    if (ringObj.params[sliders[y]].range) {
+      newMax = ringObj.params[sliders[y]].newMax();
+      values = ringObj.params[sliders[y]].values;
+      originalValues = [values[0], values[1]];
+      if (
+        values[1] / 1 >=
+        ringObj.params[sliders[y]].max[getMaterialIndex()] / 1
+      ) {
+        values[1] = newMax;
+      }
+ 
+      if (values[0] >= newMax) {
+        if (values[0] >= values[1]) {
+          values[0] = (
+            values[1] -
+            ringObj.params[sliders[y]].spacing / 10
+          ).toFixed(1);
+        }
+      }
+      if (originalValues[0] != values[0]) {
+      }
+      if (originalValues[1] != values[1]) {
+        values[0] = (
+          values[1] -
+          ringObj.params[sliders[y]].spacing / 10
+        ).toFixed(1);
+      }
+      ringObj.params[sliders[y]].values = values;
+    }
+  }
+  replaceSliders(sliders);
+};
+ 
+function returnSliderMarkers(min, max, step) {
+  min /= 10;
+  max /= 10;
+  range = max - min;
+  amt = 100 / range;
+  markersString = "";
+  markerCount = 0;
+  finalSet = 0;
+  for (y = min; y <= max; y++) {
+    markersString +=
+      '<div class="marker" style="width:' +
+      amt +
+      "%;left:" +
+      amt * markerCount +
+      "%; margin-left:-" +
+      amt / 2 +
+      '%">' +
+      y +
+      '<span class="markerDevider"></span></div>';
+    if (amt * markerCount == 100) {
+      finalSet = 1;
+    }
+    markerCount++;
+  }
+  if (finalSet == 0) {
+    markersString +=
+      '<div class="marker" style="width:' +
+      amt +
+      "%;left:100%; margin-left:-" +
+      amt / 2 +
+      '%">' +
+      max +
+      '<span class="markerDevider"></span></div>';
+  }
+ 
+  if (step != undefined) {
+    min /= step;
+    max /= step;
+    range = max - min;
+    amt = 100 / range;
+    markerCount = 0;
+    for (y = min; y <= max; y++) {
+      markersString +=
+        '<div class="marker" style="width:' +
+        amt +
+        "%;left:" +
+        amt * markerCount +
+        "%; margin-left:-" +
+        amt / 2 +
+        '%"><span class="markerSubDevider"></span></div>';
+      markerCount++;
+    }
+  }
+  return markersString;
+}
