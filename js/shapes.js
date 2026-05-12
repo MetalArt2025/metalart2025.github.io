@@ -478,7 +478,7 @@ ringsObj = [
         pathArr: [5, 6],
       },
       ringEdgeCurve: {
-        val: 0.1,
+        val: 0,
         min: [0, 0, 0, 0, 0],
         max: [0.5, 0.5, 0.5, 0.5, 0.5],
         label: ["Edge Curve Outside", "Afronding Buiten"],
@@ -499,6 +499,7 @@ ringsObj = [
           }
         },
         pathArr: [1, 3],
+        surcharge: 2.5,
       },
     },
     latheTesselation: { min: 64, max: 128 },
@@ -849,7 +850,7 @@ ringsObj = [
         pathArr: [5, 6],
       },
       ringEdgeCurve: {
-        val: 0.1,
+        val: 0,
         min: [0, 0, 0, 0, 0],
         max: [0.5, 0.5, 0.5, 0.5, 0.5],
         label: ["Edge Curve Inside", "Afronding Binnen"],
@@ -870,6 +871,7 @@ ringsObj = [
           }
         },
         pathArr: [1, 3],
+        surcharge: 2.5,
       },
     },
     latheTesselation: { min: 64, max: 128 },
@@ -1077,7 +1079,7 @@ ringsObj = [
         pathArr: [1, 2],
       },
       ringEdgeCurve: {
-        val: 0.5,
+        val: 0,
         min: [0, 0, 0, 0, 0],
         max: [0.5, 0.5, 0.5, 0.5, 0.5],
         maxOriginal: [0.5, 0.5, 0.5, 0.5, 0.5],
@@ -1095,6 +1097,7 @@ ringsObj = [
         label: ["Edge Curve Inside", "Afronding Binnen"],
         range: false,
         pathArr: [4, 6],
+        surcharge: 2.5,
       },
     },
     latheTesselation: { min: 64, max: 128 },
@@ -1262,6 +1265,7 @@ ringsObj = [
         label: ["Edge Curve Inside", "Afronding Binnen"],
         range: false,
         pathArr: [4, 6, 8, 10],
+        surcharge: 2.5,
       },
     },
     //newMax:function(val){return val;},
@@ -1437,6 +1441,7 @@ ringsObj = [
         label: ["Edge Curve Inside", "Afronding Binnen"],
         range: false,
         pathArr: [6, 8, 10, 12],
+        surcharge: 2.5,
       },
     },
     //newMax:function(val){return val;},
@@ -1630,6 +1635,7 @@ ringsObj = [
         label: ["Edge Curve Inside", "Afronding Binnen"],
         range: false,
         pathArr: [6, 8, 10, 12],
+        surcharge: 2.5,
       },
     },
     newMax: function (val) {
