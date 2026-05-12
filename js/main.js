@@ -391,7 +391,15 @@ function updatePrice() {
       ringPrice = 10;
     }
   }
- 
+
+  // Toeslag afronding: +€2,50 per afronding (binnen/buiten) als > 0
+  if (ringObj.params.ringEdgeCurve && ringObj.params.ringEdgeCurve.val > 0) {
+    ringPrice = parseFloat(ringPrice) + 2.5;
+  }
+  if (ringObj.params.ringInnerEdgeCurve && ringObj.params.ringInnerEdgeCurve.val > 0) {
+    ringPrice = parseFloat(ringPrice) + 2.5;
+  }
+
   ringPrice = ringPrice.toFixed(2);
   userRings[currentUserRing].price = ringPrice;
   ringObj.price = ringPrice;
