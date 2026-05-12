@@ -201,6 +201,11 @@ function createSlider(sliderObj) {
         returnShapes();
         ringChanged = 0;
         doRingChanged();
+        // Disclaimer bijwerken als surcharge van toepassing
+        var param = $(this).attr("param");
+        if (ringObj.params[param] && ringObj.params[param].surcharge !== undefined) {
+          replaceSliders([param]);
+        }
       },
       slide: function (event, ui) {
         slideActionNoRange($(this), ui.value);
