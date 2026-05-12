@@ -299,9 +299,9 @@ ringsObj = [
       ringEdgeCurve: {
         val: 0.5,
         min: [0, 0, 0, 0, 0],
-        max: [2, 0.5, 0.5, 0.5, 0.5],
-        maxOriginal: [2, 0.5, 0.5, 0.5, 0.5],
-        step: 0.5,
+        max: [1, 1, 1, 1, 1],
+        maxOriginal: [1, 1, 1, 1, 1],
+        step: 1,
         newMax: function () {
           return ringObj.params.ringHeightVal.val / 2 <
             ringObj.params.ringEdgeCurve.maxOriginal[getMaterialIndex()]
@@ -317,9 +317,9 @@ ringsObj = [
       ringInnerEdgeCurve: {
         val: 0.5,
         min: [0, 0, 0, 0, 0],
-        max: [2, 0.5, 0.5, 0.5, 0.5],
-        maxOriginal: [2, 0.5, 0.5, 0.5, 0.5],
-        step: 0.5,
+        max: [1, 1, 1, 1, 1],
+        maxOriginal: [1, 1, 1, 1, 1],
+        step: 1,
         newMax: function () {
           return ringObj.params.ringHeightVal.val / 2 <
             ringObj.params.ringInnerEdgeCurve.maxOriginal[getMaterialIndex()]
