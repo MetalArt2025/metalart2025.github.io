@@ -684,6 +684,15 @@ $(document).ready(function () {
       ringObj.usefinish = 0;
       ringObj.finish = "None";
       $(".finishTypeSelecter .titleButton, .disclaimer").hide();
+      // Sliders vervangen zodat surcharge tekst klopt
+      var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
+      var toReplace = [];
+      for (var i = 0; i < afrondingParams.length; i++) {
+        if (ringObj.params[afrondingParams[i]] !== undefined) {
+          toReplace.push(afrondingParams[i]);
+        }
+      }
+      if (toReplace.length > 0) replaceSliders(toReplace);
     }
     changeMaterial();
   });
