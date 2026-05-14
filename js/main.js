@@ -118,16 +118,14 @@ changeMaterial = function () {
     // Afronding minimaal 0.1 zetten bij automatisch aanzetten vinkje
     setMinimumEdgeCurve();
   } else {
-    // Van zirkonium zwart (disabled) naar ander materiaal: altijd resetten
-    if ($(".finishType").prop("disabled")) {
-      $(".finishType").prop("checked", false);
-      ringObj.usefinish = 0;
-      userRings[currentUserRing].usefinish = 0;
-      ringObj.finish = "None";
-      userRings[currentUserRing].finish = "None";
-      $(".finishTypeSelecter .titleButton, .disclaimer").hide();
-    }
+    // Altijd resetten als we naar een niet-zwart-zirkonium materiaal gaan
+    $(".finishType").prop("checked", false);
     $(".finishType").prop("disabled", false);
+    ringObj.usefinish = 0;
+    userRings[currentUserRing].usefinish = 0;
+    ringObj.finish = "None";
+    userRings[currentUserRing].finish = "None";
+    $(".finishTypeSelecter .titleButton, .disclaimer").hide();
     // Sliders verversen
     var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
     var toReplace = [];
