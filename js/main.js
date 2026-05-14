@@ -114,6 +114,7 @@ changeMaterial = function () {
     if ($(".finishType").prop("disabled")) {
       $(".finishType").prop("checked", false);
       ringObj.usefinish = 0;
+      userRings[currentUserRing].usefinish = 0;
       ringObj.finish = "None";
       $(".finishTypeSelecter .titleButton, .disclaimer").hide();
     }
