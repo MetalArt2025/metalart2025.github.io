@@ -107,14 +107,45 @@ changeMaterial = function () {
     //$('.titleButton .btnOn').click();
     $(".finishTypeSelecter .titleButton, .disclaimer").show();
     $(".finishType").prop("disabled", true);
+    // Afronding minimaal 0.1 zetten bij automatisch aanzetten vinkje
+    setMinimumEdgeCurve();
   } else {
     $(".finishType").prop("disabled", false);
+    // Als vinkje uit staat, sliders verversen
+    if (ringObj.usefinish == 0) {
+      var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
+      var toReplace = [];
+      for (var i = 0; i < afrondingParams.length; i++) {
+        if (ringObj.params && ringObj.params[afrondingParams[i]] !== undefined) {
+          toReplace.push(afrondingParams[i]);
+        }
+      }
+      if (toReplace.length > 0) replaceSliders(toReplace);
+    }
   }
  
   ringChanged = 0;
   doRingChanged();
 };
  
+function setMinimumEdgeCurve() {
+  var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
+  var toReplace = [];
+  for (var i = 0; i < afrondingParams.length; i++) {
+    var p = afrondingParams[i];
+    if (ringObj.params && ringObj.params[p] !== undefined && ringObj.params[p].val < 0.1) {
+      ringObj.params[p].val = 0.1;
+      toReplace.push(p);
+    }
+  }
+  if (toReplace.length > 0) {
+    replaceSliders(toReplace);
+    returnShapes();
+    doRingChanged();
+  }
+}
+
+
 function loadRingFromJSON() {
   //return false;
   //console.log(userRings);
@@ -665,21 +696,7 @@ $(document).ready(function () {
       ringObj.usefinish = 1;
       $(".titleButton .btnOn").click();
       $(".finishTypeSelecter .titleButton, .disclaimer").show();
-      // Afronding minimaal 0.1 zetten als vinkje aan gaat
-      var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
-      var toReplace = [];
-      for (var i = 0; i < afrondingParams.length; i++) {
-        var p = afrondingParams[i];
-        if (ringObj.params[p] !== undefined && ringObj.params[p].val < 0.1) {
-          ringObj.params[p].val = 0.1;
-          toReplace.push(p);
-        }
-      }
-      if (toReplace.length > 0) {
-        replaceSliders(toReplace);
-        returnShapes();
-        doRingChanged();
-      }
+      setMinimumEdgeCurve();
     } else {
       ringObj.usefinish = 0;
       ringObj.finish = "None";
