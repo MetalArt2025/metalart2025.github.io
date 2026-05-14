@@ -25,6 +25,8 @@ changeMaterial = function () {
     gradeIndex = 0;
     ringObj.gradeIndex = 0;
     userRings[currentUserRing].gradeIndex = 0;
+    $(".matGradeDiv button").removeClass("btnOn");
+    $(".matGradeDiv button").eq(0).addClass("btnOn");
   }
  
   if (ringMat) {
