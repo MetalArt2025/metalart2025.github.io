@@ -110,18 +110,23 @@ changeMaterial = function () {
     // Afronding minimaal 0.1 zetten bij automatisch aanzetten vinkje
     setMinimumEdgeCurve();
   } else {
-    $(".finishType").prop("disabled", false);
-    // Als vinkje uit staat, sliders verversen
-    if (ringObj.usefinish == 0) {
-      var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
-      var toReplace = [];
-      for (var i = 0; i < afrondingParams.length; i++) {
-        if (ringObj.params && ringObj.params[afrondingParams[i]] !== undefined) {
-          toReplace.push(afrondingParams[i]);
-        }
-      }
-      if (toReplace.length > 0) replaceSliders(toReplace);
+    // Als we komen van zirkonium zwart (vinkje was disabled), reset usefinish
+    if ($(".finishType").prop("disabled")) {
+      $(".finishType").prop("checked", false);
+      ringObj.usefinish = 0;
+      ringObj.finish = "None";
+      $(".finishTypeSelecter .titleButton, .disclaimer").hide();
     }
+    $(".finishType").prop("disabled", false);
+    // Sliders verversen zodat surcharge tekst klopt
+    var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
+    var toReplace = [];
+    for (var i = 0; i < afrondingParams.length; i++) {
+      if (ringObj.params && ringObj.params[afrondingParams[i]] !== undefined) {
+        toReplace.push(afrondingParams[i]);
+      }
+    }
+    if (toReplace.length > 0) replaceSliders(toReplace);
   }
  
   ringChanged = 0;
