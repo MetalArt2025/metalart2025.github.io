@@ -20,6 +20,12 @@ changeMaterial = function () {
   if (materialsArr[currentMaterial].material.length == 1) {
     gradeIndex = 0;
   }
+  // Reset gradeIndex als die buiten bereik valt voor het nieuwe materiaal
+  if (gradeIndex >= materialsArr[currentMaterial].grades.length) {
+    gradeIndex = 0;
+    ringObj.gradeIndex = 0;
+    userRings[currentUserRing].gradeIndex = 0;
+  }
  
   if (ringMat) {
     ringMat.color.setHex(
