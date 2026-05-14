@@ -110,16 +110,17 @@ changeMaterial = function () {
     // Afronding minimaal 0.1 zetten bij automatisch aanzetten vinkje
     setMinimumEdgeCurve();
   } else {
-    // Als we komen van zirkonium zwart (vinkje was disabled), reset usefinish
+    // Van zirkonium zwart (disabled) naar ander materiaal: altijd resetten
     if ($(".finishType").prop("disabled")) {
       $(".finishType").prop("checked", false);
       ringObj.usefinish = 0;
       userRings[currentUserRing].usefinish = 0;
       ringObj.finish = "None";
+      userRings[currentUserRing].finish = "None";
       $(".finishTypeSelecter .titleButton, .disclaimer").hide();
     }
     $(".finishType").prop("disabled", false);
-    // Sliders verversen zodat surcharge tekst klopt
+    // Sliders verversen
     var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
     var toReplace = [];
     for (var i = 0; i < afrondingParams.length; i++) {
@@ -698,20 +699,23 @@ $(document).ready(function () {
   //loadRingFromJSON();
   setupRing(0);
   $(".finishTypeSelecter input").bind("change", function () {
-    if ($(this).prop("checked")) {
-      ringObj.usefinish = 1;
+    // Altijd eerst usefinish syncen met de werkelijke checkbox staat
+    var isChecked = $(this).prop("checked");
+    ringObj.usefinish = isChecked ? 1 : 0;
+    userRings[currentUserRing].usefinish = ringObj.usefinish;
+    if (isChecked) {
       $(".titleButton .btnOn").click();
       $(".finishTypeSelecter .titleButton, .disclaimer").show();
       setMinimumEdgeCurve();
     } else {
-      ringObj.usefinish = 0;
       ringObj.finish = "None";
+      userRings[currentUserRing].finish = "None";
       $(".finishTypeSelecter .titleButton, .disclaimer").hide();
-      // Sliders vervangen zodat surcharge tekst klopt
+      // Sliders verversen zodat surcharge tekst klopt
       var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
       var toReplace = [];
       for (var i = 0; i < afrondingParams.length; i++) {
-        if (ringObj.params[afrondingParams[i]] !== undefined) {
+        if (ringObj.params && ringObj.params[afrondingParams[i]] !== undefined) {
           toReplace.push(afrondingParams[i]);
         }
       }
