@@ -118,14 +118,17 @@ changeMaterial = function () {
     // Afronding minimaal 0.1 zetten bij automatisch aanzetten vinkje
     setMinimumEdgeCurve();
   } else {
-    // Altijd resetten als we naar een niet-zwart-zirkonium materiaal gaan
-    $(".finishType").prop("checked", false);
+    // Alleen resetten als er een materiaelwissel was
+    if (window._materialJustChanged) {
+      $(".finishType").prop("checked", false);
+      $(".finishType").prop("disabled", false);
+      ringObj.usefinish = 0;
+      userRings[currentUserRing].usefinish = 0;
+      ringObj.finish = "None";
+      userRings[currentUserRing].finish = "None";
+      $(".finishTypeSelecter .titleButton, .disclaimer").hide();
+    }
     $(".finishType").prop("disabled", false);
-    ringObj.usefinish = 0;
-    userRings[currentUserRing].usefinish = 0;
-    ringObj.finish = "None";
-    userRings[currentUserRing].finish = "None";
-    $(".finishTypeSelecter .titleButton, .disclaimer").hide();
     // Sliders verversen
     var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
     var toReplace = [];
@@ -136,6 +139,7 @@ changeMaterial = function () {
     }
     if (toReplace.length > 0) replaceSliders(toReplace);
   }
+  window._materialJustChanged = false;
  
   ringChanged = 0;
   doRingChanged();
@@ -624,14 +628,13 @@ $(document).ready(function () {
       return false;
     }
     currentMaterial = $(this).attr("index") / 1;
-    //log('currentMaterial = ' + currentMaterial);
     userRings[currentUserRing].gradeIndex = 0;
+    ringObj.gradeIndex = 0;
     userRings[currentUserRing].glossMatteIndex = 0;
     userRings[currentUserRing].finish = "Gloss";
     ringObj.currentMaterial = currentMaterial;
-    //log('ringObj.currentMaterial = ' + currentMaterial);
     userRings[currentUserRing].currentMaterial = currentMaterial;
-    //log('userRings[currentUserRing].currentMaterial = ' + userRings[currentUserRing].currentMaterial);
+    window._materialJustChanged = true;
     $(".selectedMaterialDiv img").attr(
       "src",
       materialsArr[currentMaterial].material[0].thumb
