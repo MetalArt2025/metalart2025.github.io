@@ -665,6 +665,21 @@ $(document).ready(function () {
       ringObj.usefinish = 1;
       $(".titleButton .btnOn").click();
       $(".finishTypeSelecter .titleButton, .disclaimer").show();
+      // Afronding minimaal 0.1 zetten als vinkje aan gaat
+      var afrondingParams = ["ringEdgeCurve", "ringInnerEdgeCurve"];
+      var toReplace = [];
+      for (var i = 0; i < afrondingParams.length; i++) {
+        var p = afrondingParams[i];
+        if (ringObj.params[p] !== undefined && ringObj.params[p].val < 0.1) {
+          ringObj.params[p].val = 0.1;
+          toReplace.push(p);
+        }
+      }
+      if (toReplace.length > 0) {
+        replaceSliders(toReplace);
+        returnShapes();
+        doRingChanged();
+      }
     } else {
       ringObj.usefinish = 0;
       ringObj.finish = "None";
