@@ -406,7 +406,7 @@ updateAffected = function () {
   var maxOuterDiameter = [31, 29, 29, 37, 32];
   var effectiveMax = maxOuterDiameter[getMaterialIndex()];
   if (getMaterialIndex() == 3 && getGradeIndex() >= 2) {
-    effectiveMax = 24.9;
+    effectiveMax = 37;
   }
   max = effectiveMax / 2;
   if (ringObj.totalHeight > max) {
